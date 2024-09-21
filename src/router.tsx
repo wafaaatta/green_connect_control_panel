@@ -6,6 +6,7 @@ import UsersPage from "./views/Users";
 import ArticleCategoriesPage from "./views/ArticleCategories";
 import ArticlesPage from "./views/Articles";
 import AnnouncesPage from "./views/Announces";
+import ViewArticlePage from "./views/ViewArticle";
 
 const router = createBrowserRouter([
     {
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
             {
                 path: AppRoutes.ARTICLE_CATEGORIES,
                 element: <ArticleCategoriesPage />
+            },
+            {
+                path: AppRoutes.VIEW_ARTICLE,
+                element: <ViewArticlePage />
             },
             {
                 path: AppRoutes.ANNOUNCES,
