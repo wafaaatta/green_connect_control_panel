@@ -5,7 +5,7 @@ const AppRoutes = Object.freeze({
     EVENTS: '/events',
     ARTICLES: '/articles',
     ARTICLE_CATEGORIES: '/article-categories',
-    VIEW_ARTICLE: '/article/:id/view',
+    VIEW_ARTICLE: '/articles/:id/view',
 })
 
 export default AppRoutes

@@ -7,6 +7,7 @@ import ArticleCategoriesPage from "./views/ArticleCategories";
 import ArticlesPage from "./views/Articles";
 import AnnouncesPage from "./views/Announces";
 import ViewArticlePage from "./views/ViewArticle";
+import EventsPage from "./views/Events";
 
 const router = createBrowserRouter([
     {
@@ -38,7 +39,7 @@ const router = createBrowserRouter([
             },
             {
                 path: AppRoutes.EVENTS,
-                element: <AdminDashboard />
+                element: <EventsPage />
             },
             {
                 path: AppRoutes.ARTICLES,

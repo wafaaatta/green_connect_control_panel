@@ -33,17 +33,11 @@ const ViewArticlePage = () => {
   }
 
   return (
-    <div className="bg-gray-100 min-h-screen p-6">
-      <div className="max-w-4xl mx-auto">
-        <div className="mb-6">
-          <button className="flex items-center text-[#0096c7] hover:text-[#00b4d8] transition duration-300">
-            <ArrowLeft className="mr-2" size={20} />
-            Back to Articles
-          </button>
-        </div>
-        
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
-          <img src={article.image} alt={article.title} className="w-full h-64 object-cover" />
+    <div className="bg-gray-100 min-h-screen">
+      <div className="">
+    
+        <div className="bg-white rounded shadow overflow-hidden">
+          <img src={'https://via.placeholder.com/800x400'} alt={article.title} className="w-full h-64 object-cover" />
           
           <div className="p-6">
             <h1 className="text-3xl font-bold text-gray-900 mb-4">{article.title}</h1>
