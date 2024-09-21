@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import AppRoutes from "./constants/app_routes";
 import AdminLayout from "./Layout";
+import AdminDashboard from "./views/AdminDashboard";
 
 const router = createBrowserRouter([
     {
@@ -12,7 +13,7 @@ const router = createBrowserRouter([
         children: [
             {
                 path: AppRoutes.HOME,
-                element: <div>Home</div>
+                element: <AdminDashboard />
             }
         ]
     }
