@@ -9,10 +9,12 @@ import AnnouncesPage from "./views/Announces";
 import ViewArticlePage from "./views/ViewArticle";
 import EventsPage from "./views/Events";
 import ManagersPage from "./views/Managers";
+import AdminLoginPage from "./views/Login";
 
 const router = createBrowserRouter([
     {
-
+        path: AppRoutes.LOGIN,
+        element: <AdminLoginPage />
     },
     {
         path: AppRoutes.HOME,
