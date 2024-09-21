@@ -6,6 +6,8 @@ const AppRoutes = Object.freeze({
     ARTICLES: '/articles',
     ARTICLE_CATEGORIES: '/article-categories',
     VIEW_ARTICLE: '/articles/:id/view',
+
+    MANAGERS: '/managers',
 })
 
 export default AppRoutes

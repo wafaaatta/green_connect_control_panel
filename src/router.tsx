@@ -8,6 +8,7 @@ import ArticlesPage from "./views/Articles";
 import AnnouncesPage from "./views/Announces";
 import ViewArticlePage from "./views/ViewArticle";
 import EventsPage from "./views/Events";
+import ManagersPage from "./views/Managers";
 
 const router = createBrowserRouter([
     {
@@ -44,7 +45,11 @@ const router = createBrowserRouter([
             {
                 path: AppRoutes.ARTICLES,
                 element: <ArticlesPage />
-            }
+            },
+            {
+                path: AppRoutes.MANAGERS,
+                element: <ManagersPage />
+            },
         ]
     }
 ])
