@@ -13,31 +13,11 @@ const Header = () => {
             <Link to="/admin" className="flex-shrink-0">
               <img className="w-20" src="/src/assets/green_connect.png" alt="GreenConnect" />
             </Link>
-            <nav className="hidden md:block ml-10">
-              <div className="flex items-baseline space-x-4">
-                <Link to="/admin" className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 hover:text-[#0096c7] transition duration-300">Dashboard</Link>
-                <Link to="/admin/users" className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 hover:text-[#0096c7] transition duration-300">Users</Link>
-                <Link to="/admin/plants" className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 hover:text-[#0096c7] transition duration-300">Plants</Link>
-                <Link to="/admin/events" className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 hover:text-[#0096c7] transition duration-300">Events</Link>
-                <Link to="/admin/reports" className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 hover:text-[#0096c7] transition duration-300">Reports</Link>
-              </div>
-            </nav>
           </div>
           <div className="hidden md:block">
-            <div className="ml-4 flex items-center md:ml-6">
-              <button className="p-1 rounded-full hover:bg-[#48cae4] transition duration-300">
-                <Search className="h-6 w-6" />
-              </button>
-              <button className="ml-3 p-1 rounded-full hover:bg-[#48cae4] transition duration-300">
-                <Bell className="h-6 w-6" />
-              </button>
-              <Link to="/admin/settings" className="ml-3 p-1 rounded-full hover:bg-[#48cae4] transition duration-300">
-                <Settings className="h-6 w-6" />
-              </Link>
-              <Link to="/admin/profile" className="ml-3 p-1 rounded-full hover:bg-[#48cae4] transition duration-300">
-                <User className="h-6 w-6" />
-              </Link>
-            </div>
+            <button className='text-red-600 hover:underline'>
+                Logout
+            </button>
           </div>
           <div className="flex md:hidden">
             <button
