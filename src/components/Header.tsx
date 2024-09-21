@@ -6,20 +6,20 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   return (
-    <header className="bg-gradient-to-r from-[#0096c7] to-[#00b4d8] text-white shadow-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <div className="flex items-center">
+    <header className="bg-white shadow border">
+      <div className=" mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center py-4">
             <Link to="/admin" className="flex-shrink-0">
-              <img className="h-8 w-auto" src="/src/assets/images/greenconnect-logo-white.png" alt="GreenConnect" />
+              <img className="w-20" src="/src/assets/green_connect.png" alt="GreenConnect" />
             </Link>
             <nav className="hidden md:block ml-10">
               <div className="flex items-baseline space-x-4">
-                <Link to="/admin" className="px-3 py-2 rounded-md text-sm font-medium hover:bg-[#48cae4] transition duration-300">Dashboard</Link>
-                <Link to="/admin/users" className="px-3 py-2 rounded-md text-sm font-medium hover:bg-[#48cae4] transition duration-300">Users</Link>
-                <Link to="/admin/plants" className="px-3 py-2 rounded-md text-sm font-medium hover:bg-[#48cae4] transition duration-300">Plants</Link>
-                <Link to="/admin/events" className="px-3 py-2 rounded-md text-sm font-medium hover:bg-[#48cae4] transition duration-300">Events</Link>
-                <Link to="/admin/reports" className="px-3 py-2 rounded-md text-sm font-medium hover:bg-[#48cae4] transition duration-300">Reports</Link>
+                <Link to="/admin" className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 hover:text-[#0096c7] transition duration-300">Dashboard</Link>
+                <Link to="/admin/users" className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 hover:text-[#0096c7] transition duration-300">Users</Link>
+                <Link to="/admin/plants" className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 hover:text-[#0096c7] transition duration-300">Plants</Link>
+                <Link to="/admin/events" className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 hover:text-[#0096c7] transition duration-300">Events</Link>
+                <Link to="/admin/reports" className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 hover:text-[#0096c7] transition duration-300">Reports</Link>
               </div>
             </nav>
           </div>
