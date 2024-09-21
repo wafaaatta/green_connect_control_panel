@@ -4,6 +4,8 @@ import AdminLayout from "./Layout";
 import AdminDashboard from "./views/AdminDashboard";
 import UsersPage from "./views/Users";
 import ArticleCategoriesPage from "./views/ArticleCategories";
+import ArticlesPage from "./views/Articles";
+import AnnouncesPage from "./views/Announces";
 
 const router = createBrowserRouter([
     {
@@ -25,6 +27,18 @@ const router = createBrowserRouter([
                 path: AppRoutes.ARTICLE_CATEGORIES,
                 element: <ArticleCategoriesPage />
             },
+            {
+                path: AppRoutes.ANNOUNCES,
+                element: <AnnouncesPage />
+            },
+            {
+                path: AppRoutes.EVENTS,
+                element: <AdminDashboard />
+            },
+            {
+                path: AppRoutes.ARTICLES,
+                element: <ArticlesPage />
+            }
         ]
     }
 ])
