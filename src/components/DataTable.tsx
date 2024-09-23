@@ -1,10 +1,12 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Columns, Trash2, ChevronsLeft, ChevronsRight, Search } from 'lucide-react';
 import Loader from './Loaders';
+import Button from './Button';
 
 type KeyType = string | string[];
 
-interface Column<T> {
+export interface Column<T> {
+  id: string; // New unique identifier for the column
   key: KeyType;
   title: string;
   sortable?: boolean;
@@ -13,7 +15,6 @@ interface Column<T> {
   flex?: number;
   show?: boolean;
 }
-
 
 interface BulkActionItem {
   icon: React.ElementType;
@@ -32,6 +33,7 @@ interface DataTableProps<T> {
   emptyMessage?: string;
   striped?: boolean;
   showColumnSelector?: boolean;
+  paginated?: boolean;
 }
 
 export function DataTable<T>({
@@ -44,23 +46,24 @@ export function DataTable<T>({
   loading = false,
   emptyMessage = 'No data available',
   striped = false,
-  showColumnSelector = false
+  showColumnSelector = false,
+  paginated = false
 }: DataTableProps<T>) {
-  const [sortColumn, setSortColumn] = useState<KeyType | null>(null);
+  const [sortColumn, setSortColumn] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
-  const [visibleColumns, setVisibleColumns] = useState(columns.filter(col => col.show !== false).map(col => col.key));
+  const [visibleColumns, setVisibleColumns] = useState(columns.filter(col => col.show !== false).map(col => col.id));
   const [showColumnSelectorDropdown, setShowColumnSelectorDropdown] = useState(false);
   const [showBulkActionsDropdown, setShowBulkActionsDropdown] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredData, setFilteredData] = useState(data);
 
-  const handleSort = (column: KeyType) => {
-    if (sortColumn === column) {
+  const handleSort = (columnId: string) => {
+    if (sortColumn === columnId) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
     } else {
-      setSortColumn(column);
+      setSortColumn(columnId);
       setSortDirection('asc');
     }
   };
@@ -72,16 +75,19 @@ export function DataTable<T>({
 
   const sortedData = useMemo(() => {
     if (sortColumn) {
-      return [...filteredData].sort((a, b) => {
-        const aValue = getValue(a, sortColumn);
-        const bValue = getValue(b, sortColumn);
-        if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
-        if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
-        return 0;
-      });
+      const column = columns.find(col => col.id === sortColumn);
+      if (column) {
+        return [...filteredData].sort((a, b) => {
+          const aValue = getValue(a, column.key);
+          const bValue = getValue(b, column.key);
+          if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
+          if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
+          return 0;
+        });
+      }
     }
     return filteredData;
-  }, [filteredData, sortColumn, sortDirection, getValue]);
+  }, [filteredData, sortColumn, sortDirection, getValue, columns]);
 
   const totalPages = Math.ceil(sortedData.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -108,13 +114,12 @@ export function DataTable<T>({
     }
   };
 
-  const toggleColumnVisibility = (key: KeyType) => {
+  const toggleColumnVisibility = (columnId: string) => {
     setVisibleColumns(prev => {
-      const stringKey = Array.isArray(key) ? key.join('.') : key;
-      if (prev.includes(stringKey)) {
-        return prev.filter(k => k !== stringKey);
+      if (prev.includes(columnId)) {
+        return prev.filter(id => id !== columnId);
       } else {
-        return [...prev, stringKey];
+        return [...prev, columnId];
       }
     });
   };
@@ -155,13 +160,15 @@ export function DataTable<T>({
 
     if (startPage > 1) {
       pageNumbers.push(
-        <button
+        <Button
           key="first"
           onClick={() => setCurrentPage(1)}
-          className="px-2 py-1 text-sm font-medium text-gray-700 bg-white rounded-md hover:bg-gray-50"
+          size="sm"
+          variant="outline"
+          color="gray"
         >
           <ChevronsLeft className="w-4 h-4" />
-        </button>
+        </Button>
       );
       if (startPage > 2) {
         pageNumbers.push(<span key="ellipsis1" className="px-2 py-1">...</span>);
@@ -170,17 +177,16 @@ export function DataTable<T>({
 
     for (let i = startPage; i <= endPage; i++) {
       pageNumbers.push(
-        <button
+        <Button
           key={i}
           onClick={() => setCurrentPage(i)}
-          className={`px-3 py-1 text-sm font-medium rounded-sm ${
-            currentPage === i
-              ? 'bg-blue-500 text-white'
-              : 'text-gray-700 bg-white hover:bg-gray-50'
-          }`}
+          size="sm"
+          variant={currentPage === i ? 'primary' : 'outline'}
+          color={currentPage === i ? 'blue' : 'gray'}
+          className='rounded-none px-0 w-8 border-t border-b border-gray-500'
         >
           {i}
-        </button>
+        </Button>
       );
     }
 
@@ -189,13 +195,16 @@ export function DataTable<T>({
         pageNumbers.push(<span key="ellipsis2" className="px-2 py-1">...</span>);
       }
       pageNumbers.push(
-        <button
+        <Button
           key="last"
           onClick={() => setCurrentPage(totalPages)}
-          className="px-2 py-1 text-sm font-medium text-gray-700 bg-white rounded-md hover:bg-gray-50"
+          size="sm"
+          variant="outline"
+          className='rounded-none'
+          color="gray"
         >
           <ChevronsRight className="w-4 h-4" />
-        </button>
+        </Button>
       );
     }
 
@@ -220,13 +229,13 @@ export function DataTable<T>({
               type="checkbox"
               checked={isSelected}
               onChange={() => toggleRowSelection(index)}
-              className="form-checkbox h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+              className="form-checkbox h-4 w-4 text-[#0096c7] rounded border-gray-300 focus:ring-blue-500"
             />
           </div>
         </td>
-        {columns.filter(col => visibleColumns.includes(Array.isArray(col.key) ? col.key.join('.') : col.key)).map((column) => (
+        {columns.filter(col => visibleColumns.includes(col.id)).map((column) => (
           <td
-            key={Array.isArray(column.key) ? column.key.join('.') : column.key}
+            key={column.id}
             className="px-4 py-3 whitespace-nowrap"
             style={{
               textAlign: column.align || 'left',
@@ -248,8 +257,8 @@ export function DataTable<T>({
   };
 
   return (
-    <div className=" sm:rounded">
-      <div className="bg-white py-3 flex flex-wrap items-center justify-between border-b border-gray-200 sticky top-0 z-20">
+    <div className="sm:rounded">
+      <div className="bg-white mb-3 flex flex-wrap items-center justify-between border-gray-200 sticky top-0 z-20">
         <div className="w-full sm:w-auto mb-2 sm:mb-0">
           <div className="relative">
             <input
@@ -267,14 +276,13 @@ export function DataTable<T>({
         <div className="flex items-center space-x-2">
           {bulkActions && bulkActions.length > 0 && selectedRows.size > 0 && (
             <div className="relative">
-              <button
+              <Button
                 onClick={() => setShowBulkActionsDropdown(!showBulkActionsDropdown)}
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 focus:outline-none flex items-center"
               >
                 <Trash2 className="w-4 h-4 mr-2" />
                 Actions
                 <ChevronDown className="w-4 h-4 ml-2" />
-              </button>
+              </Button>
               {showBulkActionsDropdown && (
                 <div className="absolute right-0 mt-2 w-48 rounded shadow border bg-white ring-1 ring-black ring-opacity-5 z-30">
                   <div className="py-1" role="menu" aria-orientation="vertical">
@@ -298,28 +306,28 @@ export function DataTable<T>({
           )}
           {showColumnSelector && (
             <div className="relative">
-              <button
+              <Button
+                color='green'
                 onClick={() => setShowColumnSelectorDropdown(!showColumnSelectorDropdown)}
-                className="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded hover:bg-green-700 focus:outline-none flex items-center"
               >
                 <Columns className="w-4 h-4 mr-2" />
                 Columns
                 <ChevronDown className="w-4 h-4 ml-2" />
-              </button>
+              </Button>
               {showColumnSelectorDropdown && (
                 <div className="absolute right-0 mt-2 w-64 rounded shadow border bg-white ring-1 ring-black ring-opacity-5 z-50">
                   <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                     {columns.map((column) => (
                       <div
-                        key={Array.isArray(column.key) ? column.key.join('.') : column.key}
+                        key={column.id}
                         className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
-                        onClick={() => toggleColumnVisibility(column.key)}
+                        onClick={() => toggleColumnVisibility(column.id)}
                       >
                         <input
                           type="checkbox"
-                          checked={visibleColumns.includes(Array.isArray(column.key) ? column.key.join('.') : column.key)}
+                          checked={visibleColumns.includes(column.id)}
                           onChange={() => {}}
-                          className="form-checkbox h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500 mr-2"
+                          className="form-checkbox h-4 w-4 checked:bg-[#0096c7] text-[#0096c7] rounded border-gray-300 focus:ring-blue-500 mr-2"
                         />
                         <span className="flex-grow">{column.title}</span>
                       </div>
@@ -341,22 +349,22 @@ export function DataTable<T>({
                     type="checkbox"
                     checked={selectedRows.size === currentData.length}
                     onChange={toggleAllRows}
-                    className="form-checkbox h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                    className="form-checkbox h-4 w-4 text-[#0096c7] rounded border-gray-300 focus:ring-blue-500"
                   />
                 </div>
               </th>
-              {columns.filter(col => visibleColumns.includes(Array.isArray(col.key) ? col.key.join('.') : col.key)).map((column) => (
+              {columns.filter(col => visibleColumns.includes(col.id)).map((column) => (
                 <th
-                  key={Array.isArray(column.key) ? column.key.join('.') : column.key}
+                  key={column.id}
                   scope="col"
                   className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  onClick={() => column.sortable && handleSort(column.key)}
+                  onClick={() => column.sortable && handleSort(column.id)}
                 >
                   <div className="flex items-center cursor-pointer">
                     {column.title}
                     {column.sortable && (
                       <span className="ml-1">
-                        {sortColumn === column.key ? (
+                        {sortColumn === column.id ? (
                           sortDirection === 'asc' ? (
                             <ChevronUp className="w-4 h-4" />
                           ) : (
@@ -394,53 +402,65 @@ export function DataTable<T>({
           </tbody>
         </table>
       </div>
-      <div className="bg-white pt-3 flex items-center justify-between border-t border-gray-200 ">
-        <div className="flex-1 flex justify-between sm:hidden">
-          <button
-            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
-            className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
-          >
-            Previous
-          </button>
-          <button
-            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-            disabled={currentPage === totalPages}
-            className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
-          >
-            Next
-          </button>
-        </div>
-        <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-          <div>
-            <p className="text-sm text-gray-700">
-              Showing <span className="font-medium">{startIndex + 1}</span> to <span className="font-medium">{Math.min(endIndex, sortedData.length)}</span> of{' '}
-              <span className="font-medium">{sortedData.length}</span> results
-            </p>
-          </div>
-          <div>
-            <nav className="relative z-0 inline-flex rounded-md shadow-sm space-x-1" aria-label="Pagination">
-              <button
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
-                className="relative inline-flex items-center px-2 py-1 rounded-l-md text-sm font-medium text-gray-500 hover:bg-gray-50"
-              >
-                <span className="sr-only">Previous</span>
-                <ChevronLeft className="h-5 w-5" aria-hidden="true" />
-              </button>
-              {renderPageNumbers()}
-              <button
-                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                disabled={currentPage === totalPages}
-                className="relative inline-flex items-center px-2 py-1 rounded-r-md  text-sm font-medium text-gray-500 hover:bg-gray-50"
-              >
-                <span className="sr-only">Next</span>
-                <ChevronRight className="h-5 w-5" aria-hidden="true" />
-              </button>
-            </nav>
-          </div>
-        </div>
-      </div>
+          {
+            paginated && (
+              <div className="bg-white pt-3 flex items-center justify-between border-t border-gray-200">
+              <div className="flex-1 flex justify-between sm:hidden">
+                <Button
+                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
+                  color="gray"
+                  variant="outline"
+                >
+                  Previous
+                </Button>
+                <Button
+                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                  color="gray"
+                  variant="outline"
+                >
+                  Next
+                </Button>
+              </div>
+              <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                <div>
+                  <p className="text-sm text-gray-700">
+                    Showing <span className="font-medium">{startIndex + 1}</span> to <span className="font-medium">{Math.min(endIndex, sortedData.length)}</span> of{' '}
+                    <span className="font-medium">{sortedData.length}</span> results
+                  </p>
+                </div>
+                <div>
+                  <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                    <Button
+                      onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                      disabled={currentPage === 1}
+                      color="gray"
+                      variant="outline"
+                      className='rounded-none rounded-l px-0 w-8'
+                      size="sm"
+                    >
+                      <span className="sr-only">Previous</span>
+                      <ChevronLeft className="h-5 w-5" aria-hidden="true" />
+                    </Button>
+                    {renderPageNumbers()}
+                    <Button
+                      onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                      disabled={currentPage === totalPages}
+                      color="gray"
+                      variant="outline"
+                      className='rounded-none rounded-r px-0 w-8'
+                      size="sm"
+                    >
+                      <span className="sr-only">Next</span>
+                      <ChevronRight className="h-5 w-5" aria-hidden="true" />
+                    </Button>
+                  </nav>
+                </div>
+              </div>
+            </div>
+            )
+          }
     </div>
   );
 }

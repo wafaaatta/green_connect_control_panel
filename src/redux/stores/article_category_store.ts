@@ -11,7 +11,7 @@ const initialState: ArticleCategoryState = {
     error: null
 }
 
-const getAllCategories = createAsyncThunk(
+export const getAllCategories = createAsyncThunk(
     'articleCategory/getAllCategories',
     async () => {
         try{
