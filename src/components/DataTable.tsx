@@ -258,7 +258,7 @@ export function DataTable<T>({
 
   return (
     <div className="sm:rounded">
-      <div className="bg-white mb-3 flex flex-wrap items-center justify-between border-gray-200 sticky top-0 z-20">
+      <div className="bg-white mb-3 flex flex-wrap items-center justify-between border-gray-200  z-20">
         <div className="w-full sm:w-auto mb-2 sm:mb-0">
           <div className="relative">
             <input
@@ -437,7 +437,7 @@ export function DataTable<T>({
                       disabled={currentPage === 1}
                       color="gray"
                       variant="outline"
-                      className='rounded-none rounded-l px-0 w-8'
+                      className='rounded-none rounded-l px-0 w-8 text-red-500'
                       size="sm"
                     >
                       <span className="sr-only">Previous</span>
