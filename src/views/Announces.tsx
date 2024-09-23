@@ -1,94 +1,148 @@
-import React, { useState } from 'react'
-import { Search, Filter, Check, X, AlertCircle } from 'lucide-react'
-import { Card } from '../components/Card'
+"use client"
 
-const announcements = [
-  { id: 1, title: 'Community Garden Event', author: 'John Doe', date: '2023-05-20', status: 'Approved', content: 'Join us for a community garden planting event this weekend!' },
-  { id: 2, title: 'Plant Exchange Program', author: 'Jane Smith', date: '2023-05-18', status: 'Pending', content: 'Participate in our monthly plant exchange program. Bring a plant, take a plant!' },
-  { id: 3, title: 'New Rare Plant Arrival', author: 'Bob Johnson', date: '2023-05-15', status: 'Rejected', content: 'Exciting news! We have a new shipment of rare plants arriving next week.' },
-  { id: 4, title: 'Gardening Workshop', author: 'Alice Brown', date: '2023-05-22', status: 'Approved', content: 'Learn essential gardening techniques in our upcoming workshop.' },
-  { id: 5, title: 'Plant Care Tips', author: 'Charlie Davis', date: '2023-05-19', status: 'Pending', content: 'Check out our latest blog post for expert plant care tips and tricks!' },
-]
+import { useEffect, useState, useRef } from 'react'
+import { Card } from '../components/Card'
+import { useAppDispatch, useAppSelector } from '../hooks/hooks'
+import { getAllAnnounces } from '../redux/stores/announce_store'
+import { DataTable } from '../components/DataTable'
+import IconTextButton from '../components/IconTextButton'
+import { Check, RefreshCcw, Trash2, ChevronDown } from 'lucide-react'
+import { Breadcrumb } from '../components/Breadcrumb'
+import Button from '../components/Button'
 
 const AnnouncesPage = () => {
-  const [searchTerm, setSearchTerm] = useState('')
-  const [statusFilter, setStatusFilter] = useState('All')
+  const dispatch = useAppDispatch()
+  const { announces, loading } = useAppSelector((state) => state.announce_store)
+  const [filteredAnnounces, setFilteredAnnounces] = useState(announces)
+  const [statusFilter, setStatusFilter] = useState<string>('all')
+  const [isFilterOpen, setIsFilterOpen] = useState(false)
+  const filterRef = useRef<HTMLDivElement>(null)
 
-  const filteredAnnouncements = announcements.filter(announcement =>
-    (announcement.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    announcement.author.toLowerCase().includes(searchTerm.toLowerCase())) &&
-    (statusFilter === 'All' || announcement.status === statusFilter)
-  )
+  useEffect(() => {
+    dispatch(getAllAnnounces())
+  }, [dispatch])
+
+  useEffect(() => {
+    setFilteredAnnounces(
+      statusFilter === 'all'
+        ? announces
+        : announces.filter(announce => announce.status === statusFilter)
+    )
+  }, [announces, statusFilter])
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
+        setIsFilterOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [])
+
+  const mapStatusToTag = (status: string) => {
+    switch (status) {
+      case 'pending':
+        return <span className="inline-block bg-yellow-100 rounded px-2 py-1 text-sm font-semibold text-yellow-700 mr-2">Pending</span>
+      case 'accepted':
+        return <span className="inline-block bg-green-100 rounded px-2 py-1 text-sm font-semibold text-green-700 mr-2">Accepted</span>
+      case 'rejected':
+        return <span className="inline-block bg-red-100 rounded px-2 py-1 text-sm font-semibold text-red-700 mr-2">Rejected</span>
+      default:
+        return <span className="inline-block bg-gray-100 rounded px-2 py-1 text-sm font-semibold text-gray-700 mr-2">Unknown</span>
+    }
+  }
+
+  const handleStatusFilterChange = (status: string) => {
+    setStatusFilter(status)
+    setIsFilterOpen(false)
+  }
+
+  const breadcrumbItems = [
+    { label: 'Dashboard', href: '/' },
+    { label: 'Announces', href: '/announces' },
+  ];
+
+  const ActionBar: React.FC = () => (
+    <div className="bg-white shadow rounded px-4 py-3 mb-4">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
+        <Breadcrumb items={breadcrumbItems} />
+        <div className="flex flex-wrap items-center gap-2">
+          <div ref={filterRef} className="relative">
+            <button
+              onClick={() => setIsFilterOpen(!isFilterOpen)}
+              className="flex items-center gap-2 px-4 py-1.5 bg-white border border-gray-300 rounded shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
+            >
+              {statusFilter === 'all' ? 'All Statuses' : statusFilter.charAt(0).toUpperCase() + statusFilter.slice(1)}
+              <ChevronDown className="h-4 w-4" />
+            </button>
+            {isFilterOpen && (
+              <div className="absolute right-0 mt-2 w-56 rounded shadow bg-white ring-1 ring-black ring-opacity-5 z-10">
+                <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                  {['all', 'pending', 'accepted', 'rejected'].map((status) => (
+                    <button
+                      key={status}
+                      onClick={() => handleStatusFilterChange(status)}
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                      role="menuitem"
+                    >
+                      {status === 'all' ? 'All Statuses' : status.charAt(0).toUpperCase() + status.slice(1)}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+          <Button color="blue" leftIcon={RefreshCcw} size="sm" onClick={() => dispatch(getAllAnnounces())}>
+            Refresh Data
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div className="bg-gray-100 min-h-screen">
-        <Card title='Announcements Management'>
-          <div className="flex flex-col md:flex-row justify-between items-center mb-4">
-            <div className="w-full md:w-1/3 mb-4 md:mb-0">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Search announcements..."
-                  className="w-full pl-10 pr-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#0096c7]"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+      <ActionBar />
+      <Card title='Announcements'>
+        <DataTable 
+          striped
+          hoverable
+          loading={loading}
+          emptyMessage='No data available'
+          paginated
+          data={filteredAnnounces}
+          showColumnSelector
+          columns={[
+            { id: 'title', title: 'Title', key: 'title' },
+            { id: 'description', title: 'Description' , key: 'description'},
+            { id: 'location', title: 'Location', key: 'location' },
+            { id: 'status', title: 'Status', key: 'status', render(value, row) {
+              return mapStatusToTag(row.status)
+            }, },
+          ]}
+          actions={(row) => (
+            row.status === 'pending' && (
+              <div className="flex flex-wrap items-center gap-2">
+                <IconTextButton 
+                  icon={Check}
+                  text='Accept'
+                  onClick={() => {}}
                 />
-                <Search className="absolute left-3 top-2.5 text-gray-400" size={20} />
+                <IconTextButton 
+                  icon={Trash2}
+                  text='Reject'
+                  color='red' 
+                  onClick={() => {}}
+                />
               </div>
-            </div>
-            <div className="flex space-x-4">
-              <select
-                className="bg-gray-200 text-gray-700 px-4 py-2 rounded"
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-              >
-                <option value="All">All Status</option>
-                <option value="Approved">Approved</option>
-                <option value="Pending">Pending</option>
-                <option value="Rejected">Rejected</option>
-              </select>
-              <button className="bg-gray-200 text-gray-700 px-4 py-2 rounded flex items-center hover:bg-gray-300 transition duration-300">
-                <Filter size={20} className="mr-2" />
-                More Filters
-              </button>
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredAnnouncements.map((announcement) => (
-              <div key={announcement.id} className="bg-white border border-gray-200 rounded shadow-sm overflow-hidden">
-                <div className="p-5">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{announcement.title}</h3>
-                  <p className="text-sm text-gray-600 mb-4">{announcement.content}</p>
-                  <div className="flex justify-between items-center text-sm text-gray-500">
-                    <span>{announcement.author}</span>
-                    <span>{announcement.date}</span>
-                  </div>
-                </div>
-                <div className="bg-gray-50 px-5 py-3 flex justify-between items-center">
-                  <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                    announcement.status === 'Approved' ? 'bg-green-100 text-green-800' :
-                    announcement.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
-                    'bg-red-100 text-red-800'
-                  }`}>
-                    {announcement.status}
-                  </span>
-                  <div className="flex space-x-2">
-                    <button className="text-green-600 hover:text-green-800">
-                      <Check size={20} />
-                    </button>
-                    <button className="text-red-600 hover:text-red-800">
-                      <X size={20} />
-                    </button>
-                    <button className="text-blue-600 hover:text-blue-800">
-                      <AlertCircle size={20} />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Card>
+            )
+          )}
+        />
+      </Card>
     </div>
   )
 }

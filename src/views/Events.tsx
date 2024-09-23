@@ -18,6 +18,7 @@ import { showNotification } from '../redux/stores/notification_store';
 import Event from '../interfaces/Event';
 import IconTextButton from '../components/IconTextButton';
 import moment from 'moment';
+import { isEmptyArray } from '../utils/array_utils';
 
 const EventsPage = () => {
   const breadcrumbItems = [
@@ -130,7 +131,7 @@ const EventsPage = () => {
       >
         <DataTable 
           hoverable
-          paginated
+          paginated={!isEmptyArray(events)}
           striped
           showColumnSelector
           emptyMessage='No events found'

@@ -182,7 +182,9 @@ const menuItems: MenuItem[] = [
   { icon: <MdCampaign size={20} />, title: "Events", path: AppRoutes.EVENTS },
   { icon: <RiFilePaper2Line size={20} />, title: "Announces", path: AppRoutes.ANNOUNCES },
   { icon: <User size={20} />, title: "Users", path: AppRoutes.USERS },
-  { icon: <Layout size={20} />, title: "Managers", path: AppRoutes.MANAGERS },
+  { icon: <Layout size={20} />, title: "Managers", subItems: [
+    { title: "All Managers", path: AppRoutes.MANAGERS },
+  ]},
   {
     icon: <File size={20}/>, title: 'Article Management',
     subItems: [

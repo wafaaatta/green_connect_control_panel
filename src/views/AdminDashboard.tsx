@@ -1,6 +1,8 @@
+"use client"
+
 import React from 'react'
-import { Users, Calendar, MessageSquare, TrendingUp, Award, AlertTriangle, ArrowUp, ArrowDown, Leaf } from 'lucide-react'
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line } from 'recharts'
+import { Users, Calendar, Bell, FileText, Briefcase, TrendingUp, ArrowUp, ArrowDown, Leaf, MessageSquare } from 'lucide-react'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts'
 
 const userGrowthData = [
   { name: 'Jan', users: 4000 },
@@ -11,32 +13,42 @@ const userGrowthData = [
   { name: 'Jun', users: 11000 },
 ]
 
-const plantActivityData = [
-  { name: 'Mon', posts: 120, trades: 80 },
-  { name: 'Tue', posts: 150, trades: 100 },
-  { name: 'Wed', posts: 180, trades: 120 },
-  { name: 'Thu', posts: 190, trades: 130 },
-  { name: 'Fri', posts: 220, trades: 150 },
-  { name: 'Sat', posts: 250, trades: 170 },
-  { name: 'Sun', posts: 280, trades: 200 },
+const activityData = [
+  { name: 'Mon', events: 5, announces: 3, articles: 8 },
+  { name: 'Tue', events: 7, announces: 4, articles: 10 },
+  { name: 'Wed', events: 6, announces: 5, articles: 12 },
+  { name: 'Thu', events: 8, announces: 6, articles: 15 },
+  { name: 'Fri', events: 10, announces: 7, articles: 18 },
+  { name: 'Sat', events: 12, announces: 8, articles: 20 },
+  { name: 'Sun', events: 9, announces: 6, articles: 16 },
 ]
+
+const articleCategoriesData = [
+  { name: 'Gardening Tips', value: 400 },
+  { name: 'Sustainable Living', value: 300 },
+  { name: 'Plant Care', value: 300 },
+  { name: 'Urban Farming', value: 200 },
+  { name: 'Eco-friendly Products', value: 100 },
+]
+
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8']
 
 const AdminDashboard = () => {
   return (
     <div className="bg-gray-100 min-h-screen">
-      <div className="">
+      <div className="space-y-4">
         {/* Quick Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
           <StatCard icon={<Users className="h-6 w-6" />} title="Total Users" value="15,687" change="+12%" positive={true} />
-          <StatCard icon={<Leaf className="h-6 w-6" />} title="Plant Posts" value="32,456" change="+8%" positive={true} />
-          <StatCard icon={<Calendar className="h-6 w-6" />} title="Events This Month" value="24" change="+2" positive={true} />
-          <StatCard icon={<MessageSquare className="h-6 w-6" />} title="Active Discussions" value="1,893" change="-5%" positive={false} />
+          <StatCard icon={<Calendar className="h-6 w-6" />} title="Active Events" value="24" change="+2" positive={true} />
+          <StatCard icon={<Bell className="h-6 w-6" />} title="New Announces" value="18" change="+5" positive={true} />
+          <StatCard icon={<FileText className="h-6 w-6" />} title="Total Articles" value="1,893" change="+8%" positive={true} />
+          <StatCard icon={<Briefcase className="h-6 w-6" />} title="Managers" value="12" change="0" positive={true} />
         </div>
 
         {/* Charts */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
-          <div className="bg-white p-4 rounded shadow-md">
-            <h2 className="text-xl font-semibold mb-4 text-gray-800">User Growth</h2>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <ChartCard title="User Growth">
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={userGrowthData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
@@ -44,73 +56,78 @@ const AdminDashboard = () => {
                 <YAxis stroke="#718096" />
                 <Tooltip />
                 <Legend />
-                <Line type="monotone" dataKey="users" stroke="#0096c7" activeDot={{ r: 8 }} />
+                <Line type="monotone" dataKey="users" stroke="#3C6E71" activeDot={{ r: 8 }} />
               </LineChart>
             </ResponsiveContainer>
-          </div>
-          <div className="bg-white p-4 rounded shadow-md">
-            <h2 className="text-xl font-semibold mb-4 text-gray-800">Plant Activity</h2>
+          </ChartCard>
+          <ChartCard title="Weekly Activity">
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={plantActivityData}>
+              <BarChart data={activityData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-                <XAxis dataKey="name" stroke="#718096" />
-                <YAxis stroke="#718096" />
+                <XAxis dataKey="name" stroke="#3C6E71" />
+                <YAxis stroke="#3C6E71" />
                 <Tooltip />
                 <Legend />
-                <Bar dataKey="posts" fill="#0096c7" />
-                <Bar dataKey="trades" fill="#48cae4" />
+                <Bar dataKey="events" fill="#70AE6E" />
+                <Bar dataKey="announces" fill="#3C6E71" />
+                <Bar dataKey="articles" fill="#FFBB28" />
               </BarChart>
             </ResponsiveContainer>
-          </div>
+          </ChartCard>
         </div>
 
-        {/* Recent Activity and Alerts */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div className="bg-white p-4 rounded shadow-md">
-            <h2 className="text-xl font-semibold mb-4 text-gray-800">Recent Activity</h2>
-            <ul className="space-y-4">
-              <ActivityItem
-                icon={<Award className="h-5 w-5 text-yellow-500" />}
-                title="New Top Contributor"
-                description="User 'GreenThumb23' has become a top contributor"
-                time="2 hours ago"
-              />
-              <ActivityItem
-                icon={<TrendingUp className="h-5 w-5 text-green-500" />}
-                title="Trending Plant"
-                description="Monstera Deliciosa is trending in plant posts"
-                time="4 hours ago"
-              />
-              <ActivityItem
-                icon={<Calendar className="h-5 w-5 text-blue-500" />}
-                title="Upcoming Event"
-                description="'Urban Gardening Workshop' scheduled for next week"
-                time="1 day ago"
-              />
-            </ul>
-          </div>
-          <div className="bg-white p-4 rounded shadow-md">
-            <h2 className="text-xl font-semibold mb-4 text-gray-800">System Alerts</h2>
-            <ul className="space-y-4">
-              <AlertItem
-                icon={<AlertTriangle className="h-5 w-5 text-yellow-500" />}
-                title="High Server Load"
-                description="Server load has been high for the past hour"
-                severity="Warning"
-              />
-              <AlertItem
-                icon={<AlertTriangle className="h-5 w-5 text-red-500" />}
-                title="Failed Login Attempts"
-                description="Multiple failed login attempts detected"
-                severity="Critical"
-              />
-              <AlertItem
-                icon={<AlertTriangle className="h-5 w-5 text-green-500" />}
-                title="Database Backup"
-                description="Daily database backup completed successfully"
-                severity="Info"
-              />
-            </ul>
+        {/* Article Categories */}
+        <ChartCard title="Article Categories Distribution">
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={articleCategoriesData}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                outerRadius={80}
+                fill="#8884d8"
+                dataKey="value"
+                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+              >
+                {articleCategoriesData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip />
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
+        </ChartCard>
+
+        {/* Recent Activity */}
+        <div className="bg-white p-4 rounded shadow">
+          <h2 className="text-xl font-semibold mb-4 text-gray-800">Recent Activity</h2>
+          <div className="space-y-4">
+            <ActivityItem
+              icon={<Calendar className="h-5 w-5 text-green-500" />}
+              title="New Event Created"
+              description="'Urban Gardening Workshop' scheduled for next week"
+              time="2 hours ago"
+            />
+            <ActivityItem
+              icon={<Bell className="h-5 w-5 text-blue-500" />}
+              title="New Announcement"
+              description="'Green Initiative Launch' published"
+              time="4 hours ago"
+            />
+            <ActivityItem
+              icon={<FileText className="h-5 w-5 text-yellow-500" />}
+              title="New Article Published"
+              description="'10 Tips for Sustainable Living' added to the blog"
+              time="1 day ago"
+            />
+            <ActivityItem
+              icon={<Users className="h-5 w-5 text-purple-500" />}
+              title="New Manager Added"
+              description="John Doe joined as a content manager"
+              time="2 days ago"
+            />
           </div>
         </div>
       </div>
@@ -119,11 +136,11 @@ const AdminDashboard = () => {
 }
 
 const StatCard = ({ icon, title, value, change, positive }) => (
-  <div className="bg-white overflow-hidden shadow-md rounded">
-    <div className="p-5">
+  <div className="bg-white overflow-hidden shadow rounded transition-all duration-300">
+    <div className="p-4">
       <div className="flex items-center">
-        <div className="flex-shrink-0 bg-[#e0f7fa] rounded-md p-3">
-          {icon}
+        <div className="flex-shrink-0 bg-green-100 rounded-full p-3">
+          {React.cloneElement(icon, { className: "h-6 w-6 text-green-600" })}
         </div>
         <div className="ml-5 w-0 flex-1">
           <dl>
@@ -149,34 +166,24 @@ const StatCard = ({ icon, title, value, change, positive }) => (
   </div>
 )
 
-const ActivityItem = ({ icon, title, description, time }) => (
-  <li className="flex space-x-3">
-    <div className="flex-shrink-0">{icon}</div>
-    <div className="flex-1 min-w-0">
-      <p className="text-sm font-medium text-gray-900 truncate">{title}</p>
-      <p className="text-sm text-gray-500">{description}</p>
-    </div>
-    <div className="flex-shrink-0 whitespace-nowrap text-sm text-gray-500">{time}</div>
-  </li>
+const ChartCard = ({ title, children }) => (
+  <div className="bg-white p-4 rounded shadow">
+    <h2 className="text-xl font-semibold mb-4 text-gray-800">{title}</h2>
+    {children}
+  </div>
 )
 
-const AlertItem = ({ icon, title, description, severity }) => (
-  <li className="flex space-x-3">
-    <div className="flex-shrink-0">{icon}</div>
+const ActivityItem = ({ icon, title, description, time }) => (
+  <div className="flex items-center">
+    <div className="flex-shrink-0 mr-4">{icon}</div>
     <div className="flex-1 min-w-0">
       <p className="text-sm font-medium text-gray-900 truncate">{title}</p>
       <p className="text-sm text-gray-500">{description}</p>
     </div>
-    <div className="flex-shrink-0">
-      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-        severity === 'Critical' ? 'bg-red-100 text-red-800' :
-        severity === 'Warning' ? 'bg-yellow-100 text-yellow-800' :
-        'bg-green-100 text-green-800'
-      }`}>
-        {severity}
-      </span>
+    <div className="ml-4 flex-shrink-0">
+      <p className="text-sm text-gray-500">{time}</p>
     </div>
-  </li>
+  </div>
 )
 
 export default AdminDashboard

@@ -10,6 +10,7 @@ import ViewArticlePage from "./views/ViewArticle";
 import EventsPage from "./views/Events";
 import ManagersPage from "./views/Managers";
 import AdminLoginPage from "./views/Login";
+import ManageAuthorizations from "./views/ManageAuthorizations";
 
 const router = createBrowserRouter([
     {
@@ -51,6 +52,10 @@ const router = createBrowserRouter([
             {
                 path: AppRoutes.MANAGERS,
                 element: <ManagersPage />
+            },
+            {
+                path: AppRoutes.MANAGER_AUTHORIZATIONS,
+                element: <ManageAuthorizations />
             },
         ]
     }

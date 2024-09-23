@@ -9,6 +9,8 @@ const AppRoutes = Object.freeze({
 
     MANAGERS: '/managers',
 
+    MANAGER_AUTHORIZATIONS: '/managers/:id/authorizations',
+
     LOGIN: '/login',
 })
 
