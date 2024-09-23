@@ -28,7 +28,7 @@ const initialArticles = [
 ]
 const breadcrumbItems = [
   { label: 'Dashboard', href: '/' },
-  { label: 'Article Categories', href: '/article-categories' },
+  { label: 'Article', href: '/articles' },
 ];
 const ArticlesPage = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);

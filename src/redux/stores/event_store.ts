@@ -39,8 +39,8 @@ export const deleteEvent = createAsyncThunk(
     'event/deleteEvent',
     async (id: number) => {
         try{
-            const response = await axiosHttp.delete(`/events/${id}`)
-            return response.data
+            await axiosHttp.delete(`/events/${id}`)
+            return {id}
         }catch(error){
             throw ApiError.from(error as AxiosError)
         }
@@ -74,6 +74,19 @@ const eventSlice = createSlice({
                 state.events.push(action.payload)
             })
             .addCase(createEvent.rejected, (state, action) => {
+                state.loading = false
+                state.error = action.error.message || 'Something went wrong'
+            })
+
+
+            .addCase(deleteEvent.pending, (state) => {
+                state.loading = true
+            })
+            .addCase(deleteEvent.fulfilled, (state, action) => {
+                state.loading = false
+                state.events = state.events.filter(event => event.id !== action.payload.id)
+            })
+            .addCase(deleteEvent.rejected, (state, action) => {
                 state.loading = false
                 state.error = action.error.message || 'Something went wrong'
             })
