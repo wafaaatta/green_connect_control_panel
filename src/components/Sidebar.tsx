@@ -5,9 +5,12 @@ import {
   ChevronDown,
   Menu,
   LogOut,
+  FolderTree,
+  File,
+  Package,
 } from 'lucide-react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
-
+import AppRoutes from '../constants/app_routes';
 
 interface SubMenuItem {
   title: string;
@@ -61,7 +64,7 @@ const MenuItem: React.FC<MenuItem & { isCollapsed: boolean }> = ({ icon, title, 
       ref={menuRef}
     >
       <div
-        className={`mx-2 flex items-center ${isCollapsed ? 'justify-center p-1' : 'py-0.5'} rounded text-black hover:text-white transition duration-200 hover:bg-[#0096c7] cursor-pointer ${
+        className={`mx-2 flex items-center ${isCollapsed ? 'justify-center p-1' : 'py-0.5'} rounded text-gray-300 hover:bg-gray-700 cursor-pointer ${
           isActive ? 'bg-gray-700' : ''
         }`}
         onClick={() => {
@@ -171,9 +174,23 @@ const MenuItem: React.FC<MenuItem & { isCollapsed: boolean }> = ({ icon, title, 
 };
 
 const menuItems: MenuItem[] = [
-    { icon: <Home size={20} />, title: "Main Dashboard", path: "/admin/dashboard" },
-    
-    ];
+  { icon: <Home size={20} />, title: "Dashboard", path: "/" },
+  {
+    icon: <File size={20}/>, title: 'Article Management',
+    subItems: [
+      {
+        title: 'All Articles',
+        path: AppRoutes.ARTICLES,
+        icon: <FolderTree size={20}/>
+      },
+      {
+        title: 'Article Categories',
+        path: AppRoutes.ARTICLE_CATEGORIES,
+        icon: <Package size={20}/>
+      },
+    ]
+  },
+];
 
 
 const Sidebar: React.FC = () => {
@@ -202,13 +219,13 @@ const Sidebar: React.FC = () => {
       initial={{ width: isCollapsed ? 64 : 250 }}
       animate={{ width: isCollapsed ? 64 : 250 }}
       transition={{ duration: 0.3 }}
-      className="bg-white shadow text-white h-full overflow-hidden flex flex-col"
+      className="bg-gray-800 text-white h-full overflow-hidden flex flex-col"
     >
       <div className='flex items-center justify-between p-4 border-b border-gray-700'>
-        {!isCollapsed && <span className="text-xl text-[#0096c7] font-semibold">Green Connect</span>}
+        {!isCollapsed && <span className="text-xl font-semibold">Green Connect</span>}
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className="p-1 rounded-md bg-gray-800 hover:bg-gray-700 focus:outline-none"
+          className="p-1 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600"
         >
           <Menu size={24} />
         </button>
