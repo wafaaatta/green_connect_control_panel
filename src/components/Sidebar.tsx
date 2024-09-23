@@ -8,9 +8,13 @@ import {
   FolderTree,
   File,
   Package,
+  User,
+  Layout,
 } from 'lucide-react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import AppRoutes from '../constants/app_routes';
+import { RiFilePaper2Line } from 'react-icons/ri';
+import { MdCampaign } from 'react-icons/md';
 
 interface SubMenuItem {
   title: string;
@@ -175,6 +179,10 @@ const MenuItem: React.FC<MenuItem & { isCollapsed: boolean }> = ({ icon, title, 
 
 const menuItems: MenuItem[] = [
   { icon: <Home size={20} />, title: "Dashboard", path: "/" },
+  { icon: <MdCampaign size={20} />, title: "Events", path: AppRoutes.EVENTS },
+  { icon: <RiFilePaper2Line size={20} />, title: "Announces", path: AppRoutes.ANNOUNCES },
+  { icon: <User size={20} />, title: "Users", path: AppRoutes.USERS },
+  { icon: <Layout size={20} />, title: "Managers", path: AppRoutes.MANAGERS },
   {
     icon: <File size={20}/>, title: 'Article Management',
     subItems: [
