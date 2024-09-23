@@ -20,6 +20,7 @@ const Input: React.FC<CustomInputProps> = ({ icon: Icon, label, ...props }) => {
         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
           <Icon className="h-5 w-5 text-gray-400" />
         </div>
+        
         <input
           ref={ref}
           className="block w-full pl-10 pr-3 py-2 rounded focus:outline-none border-gray-300 focus:ring-[#0096c7] focus:border-[#0096c7] sm:text-sm transition duration-150 ease-in-out"

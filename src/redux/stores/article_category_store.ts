@@ -23,6 +23,21 @@ export const getAllCategories = createAsyncThunk(
     }
 )
 
+
+export const createCategory = createAsyncThunk(
+    'articleCategory/createCategory',
+    async (name: string) => {
+        try{
+            const response = await axiosHttp.post('/article-categories', {
+                name
+            })
+            return response.data
+        }catch(error){
+            throw ApiError.from(error as AxiosError)
+        }
+    }
+)
+
 const articleCategorySlice = createSlice({
     name: 'articleCategory',
     initialState,
@@ -37,6 +52,18 @@ const articleCategorySlice = createSlice({
                 state.categories = action.payload
             })
             .addCase(getAllCategories.rejected, (state, action) => {
+                state.loading = false
+                state.error = action.error.message || 'Something went wrong'
+            })
+
+            .addCase(createCategory.pending, (state) => {
+                state.loading = true
+            })
+            .addCase(createCategory.fulfilled, (state, action) => {
+                state.loading = false
+                state.categories.push(action.payload)
+            })
+            .addCase(createCategory.rejected, (state, action) => {
                 state.loading = false
                 state.error = action.error.message || 'Something went wrong'
             })
