@@ -5,7 +5,7 @@ import { DataTable } from '../components/DataTable'
 import { Breadcrumb } from '../components/Breadcrumb'
 import Button from '../components/Button'
 import { useAppDispatch, useAppSelector } from '../hooks/hooks'
-import { createArticle, getAllArticles } from '../redux/stores/article_store'
+import { createArticle, deleteArticle, getAllArticles } from '../redux/stores/article_store'
 import IconTextButton from '../components/IconTextButton'
 import Modal from '../components/Modal'
 import { DangerModal } from '../components/DangerModal'
@@ -16,6 +16,8 @@ import FileUpload from '../components/FileUpload'
 import { getAllCategories } from '../redux/stores/article_category_store'
 import { showNotification } from '../redux/stores/notification_store'
 import { getFileUrl } from '../utils/laravel_storage'
+import ImageControl from '../components/ImageControl'
+import Article from '../interfaces/Article'
 
 const initialArticles = [
   { id: 1, title: '10 Easy-to-Grow Houseplants for Beginners', author: 'John Doe', category: 'Indoor Plants', status: 'Published', date: '2023-05-15' },
@@ -94,6 +96,34 @@ const ArticlesPage = () => {
     }
   };
 
+  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
+
+  const openDeleteModal = (article: Article) => {
+    setSelectedArticle(article);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleDelete = async () => {
+    try {
+      await dispatch(deleteArticle(selectedArticle!.id));
+      dispatch(
+        showNotification({
+          type: 'info',
+          message: 'Article deleted successfully',
+        })
+      );
+    } catch (error) {
+      console.log(error);
+      dispatch(
+        showNotification({
+          type: 'error',
+          message: 'Failed to delete article',
+          description: (error as Error).message,
+        })
+      );
+    }
+  };
+
   return (
     <div className="bg-gray-100 min-h-screen">
       <ActionBar />
@@ -115,7 +145,7 @@ const ArticlesPage = () => {
             { title: 'Image', key: 'image', id: 'image' , render(value, row) {
               return (
                 <div className="w-20 h-20">
-                  <img src={getFileUrl(row.image)} alt="image" className="w-full h-full object-cover" />
+                  <ImageControl src={getFileUrl(row.image)} alt="image" />
                 </div>
               )
             },},
@@ -132,6 +162,7 @@ const ArticlesPage = () => {
                 icon={Trash}
                 text='Delete'
                 color='red'
+                onClick={() => openDeleteModal(row)}
               />
             </div>
           )}
@@ -197,7 +228,7 @@ const ArticlesPage = () => {
         onClose={() => setIsDeleteModalOpen(false)}
         title='Delete Article'
         content='Are you sure you want to delete this article?'
-        onAccept={() => setIsDeleteModalOpen(false)}
+        onAccept={handleDelete}
         onCancel={() => setIsDeleteModalOpen(false)}
       />
     </div>

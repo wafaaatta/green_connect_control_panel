@@ -40,8 +40,8 @@ export const deleteArticle = createAsyncThunk(
     'article/deleteArticle',
     async (id: number) => {
         try{
-            const response = await axiosHttp.delete(`/articles/${id}`)
-            return response.data
+            await axiosHttp.delete(`/articles/${id}`)
+            return { id }
         }catch(error){
             throw ApiError.from(error as AxiosError)
         }
