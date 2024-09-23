@@ -25,13 +25,13 @@ const ArticleCategoriesPage = () => {
     dispatch(getAllCategories())
   }, [dispatch])
 
+  
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const breadcrumbItems = [
     { label: 'Dashboard', href: '/' },
     { label: 'Article Categories', href: '/article-categories' },
   ];
-
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const ActionBar: React.FC = () => (
     <div className="bg-white shadow rounded px-4 py-2 mb-4">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
