@@ -1,16 +1,21 @@
 import React, { useEffect, useState } from 'react'
-import { Search, Filter, Edit, Trash, Eye, Plus, Text } from 'lucide-react'
+import { Search, Filter, Edit, Trash, Eye, Plus, Text, FolderTree } from 'lucide-react'
 import { Card } from '../components/Card'
 import { DataTable } from '../components/DataTable'
 import { Breadcrumb } from '../components/Breadcrumb'
 import Button from '../components/Button'
 import { useAppDispatch, useAppSelector } from '../hooks/hooks'
-import { getAllArticles } from '../redux/stores/article_store'
+import { createArticle, getAllArticles } from '../redux/stores/article_store'
 import IconTextButton from '../components/IconTextButton'
 import Modal from '../components/Modal'
 import { DangerModal } from '../components/DangerModal'
 import Input from '../components/Input'
 import TextArea from '../components/Textarea'
+import Select from '../components/Select'
+import FileUpload from '../components/FileUpload'
+import { getAllCategories } from '../redux/stores/article_category_store'
+import { showNotification } from '../redux/stores/notification_store'
+import { getFileUrl } from '../utils/laravel_storage'
 
 const initialArticles = [
   { id: 1, title: '10 Easy-to-Grow Houseplants for Beginners', author: 'John Doe', category: 'Indoor Plants', status: 'Published', date: '2023-05-15' },
@@ -28,6 +33,10 @@ const ArticlesPage = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const dispatch = useAppDispatch();
   const { articles, loading } = useAppSelector(state => state.article_store);
+  const { categories } = useAppSelector(state => state.article_category_store)
+
+  console.log(articles);
+  
 
   const ActionBar: React.FC = () => (
     <div className="bg-white shadow rounded px-4 py-2 mb-4">
@@ -44,7 +53,46 @@ const ArticlesPage = () => {
 
   useEffect(() => {
     dispatch(getAllArticles());
+    dispatch(getAllCategories());
   }, [dispatch]);
+
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('')
+  const [category, setCategory] = useState('');
+  const [image, setImage] = useState<File | null>(null);
+
+  const handleAdd = async () => {
+    try {
+      const formData = new FormData();
+      formData.append('title', title);
+      formData.append('content', content);
+      formData.append('article_category_id', category);
+      formData.append('image', image as File);
+      formData.append('manager_id', '1');
+      await dispatch(createArticle(formData));
+      dispatch(
+        showNotification({
+          type: 'info',
+          message: 'Article created successfully',
+        })
+      );
+
+      setTitle('');
+      setContent('');
+      setCategory('');
+      setImage(null);
+      setIsAddModalOpen(false);
+    } catch (error) {
+      console.log(error);
+      dispatch(
+        showNotification({
+          type: 'error',
+          message: 'Failed to create article',
+          description: (error as Error).message,
+        })
+      );
+    }
+  };
 
   return (
     <div className="bg-gray-100 min-h-screen">
@@ -63,7 +111,14 @@ const ArticlesPage = () => {
             { title: 'ID', key: 'id', id: 'id' },
             { title: 'Title', key: 'title', id: 'title' },
             { title: 'Content', key: 'content', id: 'content' },
-            { title: 'Category', key: ['category', 'name'], id: 'category' },
+            { title: 'Category', key: ['article_category', 'name'], id: 'category' },
+            { title: 'Image', key: 'image', id: 'image' , render(value, row) {
+              return (
+                <div className="w-20 h-20">
+                  <img src={getFileUrl(row.image)} alt="image" className="w-full h-full object-cover" />
+                </div>
+              )
+            },},
           ]}
           data={articles}
           actions={(row) => (
@@ -89,6 +144,8 @@ const ArticlesPage = () => {
           placeholder='Title'
           required
           icon={Text}
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
         />
 
         <TextArea 
@@ -97,9 +154,42 @@ const ArticlesPage = () => {
           rows={5}
           required
           icon={Text}
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
         />
 
-        
+        <Select 
+          placeholder='Category'
+          icon={FolderTree}
+          options={categories.map(cat => {
+            return {
+              label: cat.name,
+              value: cat.id
+            }
+          })}
+          value={category}
+          onChange={(value) => {
+            setCategory(value as string)
+          }}
+        />
+
+        <div className='mt-4'>
+          <FileUpload 
+            onFileSelect={(file) => {
+              setImage(file[0]); 
+            }}
+          />
+        </div>
+
+        <div className="flex justify-end gap-2 mt-4">
+
+          <Button variant='outline' color="gray" onClick={() => setIsAddModalOpen(false)}>
+            Cancel
+          </Button>
+          <Button color="blue" onClick={handleAdd}>
+            Create
+          </Button>
+        </div>
       </Modal>
 
       <DangerModal 

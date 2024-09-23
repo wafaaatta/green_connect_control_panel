@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { IconType } from 'react-icons';
 import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
 
@@ -13,7 +13,7 @@ interface CustomSelectProps {
   placeholder?: string;
 }
 
-export const CustomSelect: React.FC<CustomSelectProps> = ({
+const Select: React.FC<CustomSelectProps> = ({
   icon: Icon,
   label,
   options,
@@ -46,8 +46,24 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
     }
   };
 
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (ref.current && !ref.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [ref]);
+
+  
   return (
-    <div className="">
+    <div ref={ref} className="">
       <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
       <div className="relative">
         <button
@@ -109,3 +125,6 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
   );
 };
 
+
+
+export default Select
