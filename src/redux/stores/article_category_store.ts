@@ -38,6 +38,18 @@ export const createCategory = createAsyncThunk(
     }
 )
 
+export const deleteCategory = createAsyncThunk(
+    'articleCategory/deleteCategory',
+    async (id: number) => {
+        try{
+            const response = await axiosHttp.delete(`/article-categories/${id}`)
+            return response.data
+        }catch(error){
+            throw ApiError.from(error as AxiosError)
+        }
+    }
+)
+
 const articleCategorySlice = createSlice({
     name: 'articleCategory',
     initialState,
@@ -64,6 +76,18 @@ const articleCategorySlice = createSlice({
                 state.categories.push(action.payload)
             })
             .addCase(createCategory.rejected, (state, action) => {
+                state.loading = false
+                state.error = action.error.message || 'Something went wrong'
+            })
+
+            .addCase(deleteCategory.pending, (state) => {
+                state.loading = true
+            })
+            .addCase(deleteCategory.fulfilled, (state, action) => {
+                state.loading = false
+                state.categories = state.categories.filter(category => category.id !== action.payload.id)
+            })
+            .addCase(deleteCategory.rejected, (state, action) => {
                 state.loading = false
                 state.error = action.error.message || 'Something went wrong'
             })

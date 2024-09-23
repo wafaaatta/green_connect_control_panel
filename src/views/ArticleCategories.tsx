@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../hooks/hooks'
-import { createCategory, getAllCategories } from '../redux/stores/article_category_store'
+import { createCategory, deleteCategory, getAllCategories } from '../redux/stores/article_category_store'
 import { Card } from '../components/Card'
 import { DataTable } from '../components/DataTable'
 import Button from '../components/Button'
@@ -74,9 +74,22 @@ const ArticleCategoriesPage = () => {
 
   const handleDelete = async () => {
     try{
-
+      await dispatch(deleteCategory(selectedCategory!.id))
+      dispatch(
+        showNotification({
+          type: 'info',
+          message: 'Category deleted successfully',
+        })
+      )
     }catch(error){
-
+      console.log(error)
+      dispatch(
+        showNotification({
+          type: 'error',
+          message: 'Failed to delete category',
+          description: (error as Error).message,
+        })
+      )
     }
   }
 
