@@ -2,6 +2,11 @@
 
 import React, { useState } from 'react'
 import { Eye, EyeOff, Mail, Lock, Leaf } from 'lucide-react'
+import { useAppDispatch } from '../hooks/hooks'
+import { loginManager } from '../redux/stores/auth_store'
+import { showNotification } from '../redux/stores/notification_store'
+import Notification from '../components/Notification'
+import { unwrapResult } from '@reduxjs/toolkit'
 
 export default function GreenConnectAdminLogin() {
   const [email, setEmail] = useState('')
@@ -9,13 +14,32 @@ export default function GreenConnectAdminLogin() {
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
+  const dispatch = useAppDispatch()
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    setIsLoading(false)
-    // Handle login logic here
+    
+    await dispatch(loginManager({email, password}))
+    .then(unwrapResult)
+    .then(() => {
+      setIsLoading(false)
+      dispatch(
+        showNotification({
+          type: 'success',
+          message: 'Login successful',
+        })
+      )
+    }).catch((error) => {
+      setIsLoading(false)
+      dispatch(
+        showNotification({
+          type: 'error',
+          message: 'Login failed',
+          description: (error as Error).message,
+        })
+      )
+    })
   }
 
   return (
@@ -65,7 +89,7 @@ export default function GreenConnectAdminLogin() {
 
             <button
               type="submit"
-              className={`w-full py-3 px-4 bg-green-600 text-white rounded font-semibold shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-300 ${
+              className={`w-full py-3 px-4 bg-green-600 text-white rounded font-semibold shadow hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-300 ${
                 isLoading ? 'opacity-70 cursor-not-allowed' : ''
               }`}
               disabled={isLoading}
@@ -82,6 +106,8 @@ export default function GreenConnectAdminLogin() {
           </form>
         </div>
       </div>
+
+      <Notification />
     </div>
   )
 }

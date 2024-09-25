@@ -6,3 +6,7 @@ export const checkAuthentication = (): boolean => {
 export const getAuthenticationToken = (): string | null  => {
     return localStorage.getItem('token')
 }
+
+export const saveAuthenticationToken = (token: string) => {
+    localStorage.setItem('token', token)
+}
