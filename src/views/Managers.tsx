@@ -1,39 +1,53 @@
 "use client"
 
-import React, { useState } from 'react'
-import { Search, Plus, Edit, Trash, Shield, Mail, Phone, Calendar, Grid, List, Table as TableIcon } from 'lucide-react'
+import React, { useEffect, useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Search, Plus, Edit, Trash, Shield, Mail, Phone, Calendar, Grid, List, Table as TableIcon, X, MailIcon, User, Lock } from 'lucide-react'
 import { Card } from '../components/Card'
+import Modal from '../components/Modal'
+import { DangerModal } from '../components/DangerModal'
+import Input from '../components/Input'
+import Select from '../components/Select'
+import Button from '../components/Button'
+import { useAppDispatch, useAppSelector } from '../hooks/hooks'
+import { createManager, deleteManager, getAllManagers, updateManager } from '../redux/stores/manager_store'
+import Manager from './../interfaces/Manager';
+import { unwrapResult } from '@reduxjs/toolkit'
+import { showNotification } from '../redux/stores/notification_store'
 
-const initialManagers = [
-  { id: 1, name: "Alice Johnson", email: "alice@greenconnect.com", phone: "+1 (555) 123-4567", role: "Super Admin",  joinDate: "2022-01-15", status: "Active" },
-  { id: 2, name: "Bob Smith", email: "bob@greenconnect.com", phone: "+1 (555) 234-5678", role: "Content Manager", joinDate: "2022-03-20", status: "Active" },
-  { id: 3, name: "Carol Williams", email: "carol@greenconnect.com", phone: "+1 (555) 345-6789", role: "Event Coordinator", joinDate: "2022-05-10", status: "Active" },
-  { id: 4, name: "David Brown", email: "david@greenconnect.com", phone: "+1 (555) 456-7890", role: "User Support", joinDate: "2022-07-05", status: "Inactive" },
-  { id: 5, name: "Eva Martinez", email: "eva@greenconnect.com", phone: "+1 (555) 567-8901", role: "Marketing Manager", joinDate: "2022-09-15", status: "Active" },
-]
-
-const ManagersPage = () => {
-  const [managers, setManagers] = useState(initialManagers)
-  const [searchTerm, setSearchTerm] = useState('')
+const ManagersPage: React.FC = () => {
   const [layout, setLayout] = useState<'grid' | 'list' | 'table'>('grid')
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const [selectedManager, setSelectedManager] = useState<Manager | null>(null)
+  const [newManager, setNewManager] = useState({ name: '', email: '',  password: '' })
 
-  const filteredManagers = managers.filter(manager =>
-    manager.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    manager.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    manager.role.toLowerCase().includes(searchTerm.toLowerCase())
+  const ActionBar: React.FC = () => (
+    <motion.div
+      className="bg-white shadow border rounded py-2 px-4 mb-4 flex flex-wrap justify-between items-center gap-4"
+    >
+      <h1 className="text-2xl font-bold text-gray-800">Managers</h1>
+      <div className="flex flex-wrap items-center gap-4">
+        <LayoutToggle />
+        <Button color="blue" leftIcon={Plus} onClick={() => setIsCreateModalOpen(true)}>
+          Add New Manager
+        </Button>
+      </div>
+    </motion.div>
   )
 
-  const LayoutToggle = () => (
-    <div className="flex bg-gray-200 rounded-lg p-1">
+  const LayoutToggle: React.FC = () => (
+    <div className="flex space-x-2 bg-gray-200 rounded p-1">
       <LayoutButton icon={<Grid size={18} />} name="grid" current={layout} onClick={() => setLayout('grid')} />
       <LayoutButton icon={<List size={18} />} name="list" current={layout} onClick={() => setLayout('list')} />
       <LayoutButton icon={<TableIcon size={18} />} name="table" current={layout} onClick={() => setLayout('table')} />
     </div>
   )
 
-  const LayoutButton = ({ icon, name, current, onClick }) => (
+  const LayoutButton: React.FC<{ icon: React.ReactNode; name: string; current: string; onClick: () => void }> = ({ icon, name, current, onClick }) => (
     <button
-      className={`flex items-center justify-center p-2 rounded-md transition-all duration-200 ${
+      className={`flex items-center justify-center p-2 rounded transition-all duration-200 ${
         current === name ? 'bg-white text-[#0096c7] shadow-sm' : 'text-gray-600 hover:bg-gray-300'
       }`}
       onClick={onClick}
@@ -43,47 +57,48 @@ const ManagersPage = () => {
     </button>
   )
 
-  const GridView = () => (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-      {filteredManagers.map((manager) => (
-        <div key={manager.id} className="bg-white rounded shadow overflow-hidden border">
+  const dispatch = useAppDispatch()
+  const {managers} = useAppSelector(state => state.manager_store)
+
+  const GridView: React.FC = () => (
+    <motion.div 
+      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
+    >
+      {managers.map((manager) => (
+        <motion.div
+          key={manager.id}
+          className="bg-white rounded shadow overflow-hidden border"
+        >
           <div className="p-5">
             <div className="flex justify-between items-start">
               <div>
                 <h3 className="text-lg font-semibold text-gray-900">{manager.name}</h3>
-                <p className="text-sm text-gray-600">{manager.role}</p>
               </div>
-              <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                manager.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-              }`}>
-                {manager.status}
-              </span>
             </div>
           </div>
-          <div className="bg-gray-50 px-5 py-3 flex justify-between items-center">
-            <button className="text-[#0096c7] hover:text-[#00b4d8] flex items-center transition-colors duration-200">
-              <Shield size={16} className="mr-1" />
-              Permissions
-            </button>
-            <div>
-              <button className="text-[#0096c7] hover:text-[#00b4d8] mr-3 transition-colors duration-200">
+          <div className="flex justify-end p-2 bg-gray-100">
+              <button className="text-[#0096c7] hover:text-[#00b4d8] mr-3 transition-colors duration-200" onClick={() => handleEdit(manager)}>
                 <Edit size={18} />
               </button>
-              <button className="text-red-600 hover:text-red-900 transition-colors duration-200">
+              <button className="text-red-600 hover:text-red-900 transition-colors duration-200" onClick={() => handleDelete(manager)}>
                 <Trash size={18} />
               </button>
             </div>
-          </div>
-        </div>
+        </motion.div>
       ))}
-    </div>
+    </motion.div>
   )
 
-  const ListView = () => (
-    <div className="space-y-4">
-      {filteredManagers.map((manager) => (
-        <div key={manager.id} className="bg-white rounded shadow overflow-hidden border">
-          <div className="p-5 flex justify-between items-center">
+  const ListView: React.FC = () => (
+    <motion.div
+      className="space-y-4"
+    >
+      {managers.map((manager) => (
+        <motion.div
+          key={manager.id}
+          className="bg-white rounded shadow overflow-hidden border"
+        >
+          <div className="p-4 flex justify-between items-center">
             <div className="flex items-center space-x-4">
               <div className="flex-shrink-0">
                 <div className="w-12 h-12 bg-[#0096c7] rounded-full flex items-center justify-center text-white font-semibold text-lg">
@@ -92,109 +107,194 @@ const ManagersPage = () => {
               </div>
               <div>
                 <h3 className="text-lg font-semibold text-gray-900">{manager.name}</h3>
-                <p className="text-sm text-gray-600">{manager.role}</p>
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                manager.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-              }`}>
-                {manager.status}
-              </span>
-              <button className="text-[#0096c7] hover:text-[#00b4d8] transition-colors duration-200">
-                <Shield size={18} />
-              </button>
-              <button className="text-[#0096c7] hover:text-[#00b4d8] transition-colors duration-200">
+              <button className="text-[#0096c7] hover:text-[#00b4d8] transition-colors duration-200" onClick={() => handleEdit(manager)}>
                 <Edit size={18} />
               </button>
-              <button className="text-red-600 hover:text-red-900 transition-colors duration-200">
+              <button className="text-red-600 hover:text-red-900 transition-colors duration-200" onClick={() => handleDelete(manager)}>
                 <Trash size={18} />
               </button>
             </div>
           </div>
-        </div>
+        </motion.div>
       ))}
-    </div>
+    </motion.div>
   )
 
-  const TableView = () => (
-    <div className="overflow-x-auto">
-      <table className="min-w-full bg-white">
+  const TableView: React.FC = () => (
+    <motion.div
+      className="overflow-x-auto"
+    >
+      <table className="min-w-full bg-white rounded overflow-hidden">
         <thead className="bg-gray-100">
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Join Date</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200">
-          {filteredManagers.map((manager) => (
-            <tr key={manager.id} className="hover:bg-gray-50 transition-colors duration-200">
+          {managers.map((manager) => (
+            <motion.tr
+              key={manager.id}
+              className="hover:bg-gray-50 transition-colors duration-200"
+            >
               <td className="px-6 py-4 whitespace-nowrap">{manager.name}</td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{manager.role}</td>
               <td className="px-6 py-4 whitespace-nowrap text-sm">{manager.email}</td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm">{manager.phone}</td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm">{manager.joinDate}</td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                  manager.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                }`}>
-                  {manager.status}
-                </span>
-              </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                <button className="text-[#0096c7] hover:text-[#00b4d8] mr-3 transition-colors duration-200">
-                  <Shield size={18} />
-                </button>
-                <button className="text-[#0096c7] hover:text-[#00b4d8] mr-3 transition-colors duration-200">
+                <button className="text-[#0096c7] hover:text-[#00b4d8] mr-3 transition-colors duration-200" onClick={() => handleEdit(manager)}>
                   <Edit size={18} />
                 </button>
-                <button className="text-red-600 hover:text-red-900 transition-colors duration-200">
+                <button className="text-red-600 hover:text-red-900 transition-colors duration-200" onClick={() => handleDelete(manager)}>
                   <Trash size={18} />
                 </button>
               </td>
-            </tr>
+            </motion.tr>
           ))}
         </tbody>
       </table>
-    </div>
+    </motion.div>
   )
 
+  const handleCreate = async () => {
+    await dispatch(createManager(newManager))
+    .then(unwrapResult)
+    .then(() => {
+      dispatch(showNotification({ type: 'info', message: 'Manager created successfully' }))
+      setIsCreateModalOpen(false)
+      setNewManager({ name: '', email: '',  password: '' })
+    }).catch(err => {
+      dispatch(showNotification({ type: 'error', message: 'Failed to create manager', description: (err as Error).message }))
+    })
+  }
+
+  const handleEdit = (manager: Manager) => {
+    setSelectedManager(manager)
+    setIsEditModalOpen(true)
+  }
+
+  const handleUpdate = async () => {
+    if (selectedManager) {
+      await dispatch(
+        updateManager({ id: selectedManager.id, data: selectedManager })
+      ).then(unwrapResult)
+      .then(() => {
+        dispatch(showNotification({ type: 'info', message: 'Manager updated successfully' }))
+        setIsEditModalOpen(false)
+        setSelectedManager(null)
+      }).catch(err => {
+        dispatch(showNotification({ type: 'error', message: 'Failed to update manager', description: (err as Error).message }))
+      })
+    }
+  }
+
+  const handleDelete = (manager: Manager) => {
+    setSelectedManager(manager)
+    setIsDeleteModalOpen(true)
+  }
+
+  const confirmDelete = async () => {
+    if (selectedManager) {
+      await dispatch(
+        deleteManager(selectedManager.id)
+      ).then(unwrapResult)
+      .then(() => {
+        dispatch(showNotification({ type: 'info', message: 'Manager deleted successfully' }))
+        setIsDeleteModalOpen(false)
+        setSelectedManager(null)
+      }).catch(err => {
+        dispatch(showNotification({ type: 'error', message: 'Failed to delete manager', description: (err as Error).message }))
+      })
+    }
+  }
+
+
+
+  useEffect(() => {
+    dispatch(getAllManagers())
+  }, [dispatch])
+
   return (
-    <div className="bg-gray-100 min-h-screen p-6">
-      <Card
-        title='Managers'
-        headerAction={
-          <div className="flex space-x-4">
-            <LayoutToggle />
-            <button className="bg-[#0096c7] text-white px-4 py-2 rounded-lg hover:bg-[#00b4d8] transition duration-300 flex items-center">
-              <Plus size={20} className="mr-2" />
-              Add New Manager
-            </button>
-          </div>
-        }
-      >
-        <div className="mb-6">
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search managers..."
-              className="w-full pl-10 pr-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#0096c7]"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <Search className="absolute left-3 top-2.5 text-gray-400" size={20} />
-          </div>
-        </div>
-        
+    <div className="bg-gray-100 min-h-screen">
+      <ActionBar />
+      <Card>
         {layout === 'grid' && <GridView />}
         {layout === 'list' && <ListView />}
         {layout === 'table' && <TableView />}
       </Card>
+
+      <Modal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} title="Add New Manager">
+        <Input
+          label="Name"
+          icon={User}
+          value={newManager.name}
+          onChange={(e) => setNewManager({ ...newManager, name: e.target.value })}
+          placeholder="Enter manager's name"
+        />
+        <Input
+          label="Email"
+          icon={Mail}
+          value={newManager.email}
+          onChange={(e) => setNewManager({ ...newManager, email: e.target.value })}
+          placeholder="Enter manager's email"
+        />
+
+        <Input
+          label="Password"
+          placeholder='Enter password'
+          icon={Lock}
+          value={newManager.password}
+          onChange={(value) => setNewManager({ ...newManager, password: value.target.value })}
+
+        />
+        <div className="mt-4 flex justify-end space-x-2">
+          <Button variant='outline' color="gray" onClick={() => setIsCreateModalOpen(false)}>Cancel</Button>
+          <Button color="blue" onClick={handleCreate}>Create Manager</Button>
+        </div>
+      </Modal>
+
+      <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} title="Edit Manager">
+        {selectedManager && (
+          <>
+            <Input
+              label="Name"
+              icon={User}
+              value={selectedManager.name}
+              placeholder='Enter name'
+              onChange={(e) => setSelectedManager({ ...selectedManager, name: e.target.value })}
+            />
+            <Input
+              label="Email"
+              icon={MailIcon}
+              value={selectedManager.email}
+              placeholder='Enter email'
+              onChange={(e) => setSelectedManager({ ...selectedManager, email: e.target.value })}
+            />
+            <Input
+              label="Password"
+              placeholder='Enter password'
+              icon={Shield}
+              onChange={(e) => setSelectedManager({ ...selectedManager, password: e.target.value.length > 0 ? e.target.value : undefined })}
+            />
+
+            <div className="mt-4 flex justify-end space-x-2">
+              <Button variant='outline' color="gray" onClick={() => setIsEditModalOpen(false)}>Cancel</Button>
+              <Button color="blue" onClick={handleUpdate}>Update Manager</Button>
+            </div>
+          </>
+        )}
+      </Modal>
+
+      <DangerModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        title="Delete Manager"
+        content={`Are you sure you want to delete ${selectedManager?.name}? This action cannot be undone.`}
+        onAccept={confirmDelete}
+        onCancel={() => setIsDeleteModalOpen(false)}
+      />
     </div>
   )
 }

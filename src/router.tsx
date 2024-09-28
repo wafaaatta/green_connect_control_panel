@@ -11,6 +11,7 @@ import EventsPage from "./views/Events";
 import ManagersPage from "./views/Managers";
 import AdminLoginPage from "./views/Login";
 import ManageAuthorizations from "./views/ManageAuthorizations";
+import RequireAuth from "./components/RequireAuth";
 
 const router = createBrowserRouter([
     {
@@ -19,7 +20,7 @@ const router = createBrowserRouter([
     },
     {
         path: AppRoutes.HOME,
-        element: <AdminLayout />,
+        element: <RequireAuth><AdminLayout /></RequireAuth>,
         children: [
             {
                 path: AppRoutes.HOME,

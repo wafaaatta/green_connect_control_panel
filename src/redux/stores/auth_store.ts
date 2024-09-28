@@ -3,7 +3,7 @@ import Manager from "../../interfaces/Manager"
 import { AxiosError } from "axios"
 import ApiError from "../../interfaces/ApiError"
 import axiosHttp from "../../utils/axios_client"
-import { saveAuthenticationToken } from "../../utils/authentication"
+import { removeAuthenticationToken, saveAuthenticationToken } from "../../utils/authentication"
 
 interface AuthState {
     status_code: number | null
@@ -46,6 +46,8 @@ const authSlice = createSlice({
             state.manager = null
             state.authorizations = []
             state.isAuthenticated = false
+
+            removeAuthenticationToken()
         }
     },
     extraReducers: (builder) => {

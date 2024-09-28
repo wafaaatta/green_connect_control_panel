@@ -7,6 +7,7 @@ import user_store from './stores/user_store';
 import announce_store from './stores/announce_store';
 import auth_store from './stores/auth_store';
 import statistics_store from './stores/statistics_store';
+import manager_store from './stores/manager_store';
 
 
 const rootReducer = combineReducers({
@@ -17,7 +18,8 @@ const rootReducer = combineReducers({
     user_store: user_store,
     announce_store: announce_store,
     auth_store: auth_store,
-    statistics_store: statistics_store
+    statistics_store: statistics_store,
+    manager_store: manager_store
 });
 
 export default rootReducer;

@@ -1,10 +1,12 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react'
 import { useAppDispatch } from '../hooks/hooks'
 import { loginManager } from '../redux/stores/auth_store'
 import { showNotification } from '../redux/stores/notification_store'
 import Notification from '../components/Notification'
 import { unwrapResult } from '@reduxjs/toolkit'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import AppRoutes from '../constants/app_routes'
 
 export default function GreenConnectAdminLogin() {
   const [email, setEmail] = useState('')
@@ -13,6 +15,22 @@ export default function GreenConnectAdminLogin() {
   const [isLoading, setIsLoading] = useState(false)
 
   const dispatch = useAppDispatch()
+  const navigate = useNavigate()
+
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const redirected = searchParams.get("redirected") === 'true';
+    if (redirected) {
+      dispatch(
+        showNotification({
+          type: 'info',
+          message: 'Login Again',
+          description: 'Unauthorized access. Please login again.',
+        })
+      )
+    }
+  }, [dispatch, searchParams]); //
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -28,6 +46,14 @@ export default function GreenConnectAdminLogin() {
           message: 'Login successful',
         })
       )
+
+      const redirected = searchParams.get("redirected") === 'true';
+      const redirectTo = searchParams.get("redirected_from") || '/';
+      if (redirected) {
+        return navigate(redirectTo);
+      }
+
+      navigate(AppRoutes.HOME)
     }).catch((error) => {
       setIsLoading(false)
       dispatch(

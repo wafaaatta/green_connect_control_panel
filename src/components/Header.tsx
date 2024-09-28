@@ -1,8 +1,11 @@
 "use client"
 
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Bell, Settings, User, Menu, X, Search, Home, Users, Calendar, FileText, BarChart2, LogOut, LogOutIcon } from 'lucide-react'
+import { useAppDispatch } from '../hooks/hooks'
+import { logout } from '../redux/stores/auth_store'
+import AppRoutes from '../constants/app_routes'
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -26,6 +29,14 @@ const Header = () => {
     { name: 'Reports', icon: BarChart2, path: '/admin/reports' },
   ]
 
+  const dispatch = useAppDispatch()
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    dispatch(logout())
+    navigate(AppRoutes.LOGIN)
+  }
+
   return (
     <header className={`bg-white shadow-md transition-all duration-300 ${scrolled ? 'py-2' : 'py-4'}`}>
       <div className=" mx-auto px-4 sm:px-6 lg:px-8">
@@ -48,13 +59,13 @@ const Header = () => {
                   {item.name}
                 </Link>
               ))}
-              <Link
-                to="/admin/settings"
-                className="text-gray-700 hover:text-red-600 text-red-500 px-3 py-2 rounded-md text-sm font-medium flex items-center transition duration-150 ease-in-out"
+              <div
+              onClick={handleLogout}
+                className="cursor-pointerhover:text-red-600 text-red-500 px-3 py-2 rounded-md text-sm font-medium flex items-center transition duration-150 ease-in-out"
               >
                 <LogOutIcon className="h-5 w-5 mr-2" />
                 Sign out
-              </Link>
+              </div>
             </nav>
             <div className="flex md:hidden">
               <button
