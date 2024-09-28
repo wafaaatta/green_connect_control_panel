@@ -5,7 +5,7 @@ import article_store from './stores/article_store';
 import event_store from './stores/event_store';
 import user_store from './stores/user_store';
 import announce_store from './stores/announce_store';
-import statistics_store from './stores/statistics_store';
+import auth_store from './stores/auth_store';
 
 
 const rootReducer = combineReducers({
@@ -15,6 +15,7 @@ const rootReducer = combineReducers({
     event_store: event_store,
     user_store: user_store,
     announce_store: announce_store,
+    auth_store: auth_store,
     statistics_store: statistics_store
 });
 

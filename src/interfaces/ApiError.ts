@@ -1,14 +1,14 @@
 import { AxiosError } from "axios";
 
 interface HostError{
-    error: string
+    message: string
 }
 
 class ApiError{
     message: string | null = null
     
     static from(error: AxiosError){
-        return (error.response?.data as HostError).error
+        return (error.response?.data as HostError).message
     }
 }
 
