@@ -48,6 +48,23 @@ export const deleteArticle = createAsyncThunk(
     }
 )
 
+interface UpdateArticlePayload {
+    id: number
+    data: FormData
+}
+
+export const updateArticle = createAsyncThunk(
+    'article/updateArticle',
+    async (payload: UpdateArticlePayload) => {
+        try{
+            const response = await axiosHttp.post(`/articles/${payload.id}?_method=PUT`, payload.data)
+            return response.data
+        }catch(error){
+            throw ApiError.from(error as AxiosError)
+        }
+    }
+)
+
 const articleSlice = createSlice({
     name: 'article',
     initialState,
@@ -72,7 +89,7 @@ const articleSlice = createSlice({
             })
             .addCase(createArticle.fulfilled, (state, action) => {
                 state.loading = false
-                state.articles.push(action.payload)
+                state.articles.unshift(action.payload)
             })
             .addCase(createArticle.rejected, (state, action) => {
                 state.loading = false
@@ -88,6 +105,19 @@ const articleSlice = createSlice({
                 state.articles = state.articles.filter((article) => article.id !== action.payload.id)
             })
             .addCase(deleteArticle.rejected, (state, action) => {
+                state.loading = false
+                state.error = action.error.message || 'Something went wrong'
+            })
+
+
+            .addCase(updateArticle.pending, (state) => {
+                state.loading = true
+            })
+            .addCase(updateArticle.fulfilled, (state, action) => {
+                state.loading = false
+                state.articles = state.articles.map((article) => article.id === action.payload.id ? action.payload : article)
+            })
+            .addCase(updateArticle.rejected, (state, action) => {
                 state.loading = false
                 state.error = action.error.message || 'Something went wrong'
             })

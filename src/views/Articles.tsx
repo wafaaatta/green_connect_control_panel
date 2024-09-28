@@ -5,7 +5,7 @@ import { DataTable } from '../components/DataTable'
 import { Breadcrumb } from '../components/Breadcrumb'
 import Button from '../components/Button'
 import { useAppDispatch, useAppSelector } from '../hooks/hooks'
-import { createArticle, deleteArticle, getAllArticles } from '../redux/stores/article_store'
+import { createArticle, deleteArticle, getAllArticles, updateArticle } from '../redux/stores/article_store'
 import IconTextButton from '../components/IconTextButton'
 import Modal from '../components/Modal'
 import { DangerModal } from '../components/DangerModal'
@@ -19,26 +19,29 @@ import { getFileUrl } from '../utils/laravel_storage'
 import ImageControl from '../components/ImageControl'
 import Article from '../interfaces/Article'
 
-const initialArticles = [
-  { id: 1, title: '10 Easy-to-Grow Houseplants for Beginners', author: 'John Doe', category: 'Indoor Plants', status: 'Published', date: '2023-05-15' },
-  { id: 2, title: 'The Ultimate Guide to Composting', author: 'Jane Smith', category: 'Sustainable Gardening', status: 'Draft', date: '2023-05-18' },
-  { id: 3, title: 'How to Design a Beautiful Flower Garden', author: 'Alice Brown', category: 'Outdoor Landscaping', status: 'Published', date: '2023-05-10' },
-  { id: 4, title: 'Understanding Plant Nutrition', author: 'Bob Johnson', category: 'Plant Care', status: 'Under Review', date: '2023-05-20' },
-  { id: 5, title: 'Seasonal Gardening: What to Plant in Spring', author: 'Charlie Davis', category: 'Gardening Tips', status: 'Published', date: '2023-05-12' },
-]
 const breadcrumbItems = [
   { label: 'Dashboard', href: '/' },
   { label: 'Article', href: '/articles' },
-];
-const ArticlesPage = () => {
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const dispatch = useAppDispatch();
-  const { articles, loading } = useAppSelector(state => state.article_store);
+]
+
+const ArticlesPage: React.FC = () => {
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false)
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const dispatch = useAppDispatch()
+  const { articles, loading } = useAppSelector(state => state.article_store)
   const { categories } = useAppSelector(state => state.article_category_store)
 
-  console.log(articles);
-  
+  const [title, setTitle] = useState('')
+  const [content, setContent] = useState('')
+  const [category, setCategory] = useState('')
+  const [image, setImage] = useState<File | null>(null)
+  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null)
+
+  useEffect(() => {
+    dispatch(getAllArticles())
+    dispatch(getAllCategories())
+  }, [dispatch])
 
   const ActionBar: React.FC = () => (
     <div className="bg-white shadow rounded px-4 py-2 mb-4">
@@ -51,85 +54,119 @@ const ArticlesPage = () => {
         </div>
       </div>
     </div>
-  );
-
-  useEffect(() => {
-    dispatch(getAllArticles());
-    dispatch(getAllCategories());
-  }, [dispatch]);
-
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('')
-  const [category, setCategory] = useState('');
-  const [image, setImage] = useState<File | null>(null);
+  )
 
   const handleAdd = async () => {
     try {
-      const formData = new FormData();
-      formData.append('title', title);
-      formData.append('content', content);
-      formData.append('article_category_id', category);
-      formData.append('image', image as File);
-      formData.append('manager_id', '1');
-      await dispatch(createArticle(formData));
+      const formData = new FormData()
+      formData.append('title', title)
+      formData.append('content', content)
+      formData.append('article_category_id', category)
+      formData.append('image', image as File)
+      formData.append('manager_id', '1')
+      await dispatch(createArticle(formData))
       dispatch(
         showNotification({
           type: 'info',
           message: 'Article created successfully',
         })
-      );
-
-      setTitle('');
-      setContent('');
-      setCategory('');
-      setImage(null);
-      setIsAddModalOpen(false);
+      )
+      resetForm()
+      setIsAddModalOpen(false)
     } catch (error) {
-      console.log(error);
+      console.log(error)
       dispatch(
         showNotification({
           type: 'error',
           message: 'Failed to create article',
           description: (error as Error).message,
         })
-      );
+      )
     }
-  };
+  }
 
-  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
+  const handleEdit = async () => {
+    if (!selectedArticle) return
+
+    try {
+      const formData = new FormData()
+      formData.append('title', title)
+      formData.append('content', content)
+      formData.append('article_category_id', category)
+      if (image) {
+        formData.append('image', image)
+      }
+
+      await dispatch(updateArticle({ id: selectedArticle.id, data: formData }))
+      dispatch(
+        showNotification({
+          type: 'info',
+          message: 'Article updated successfully',
+        })
+      )
+      resetForm()
+      setIsEditModalOpen(false)
+    } catch (error) {
+      console.log(error)
+      dispatch(
+        showNotification({
+          type: 'error',
+          message: 'Failed to update article',
+          description: (error as Error).message,
+        })
+      )
+    }
+  }
+
+  const openEditModal = (article: Article) => {
+    setSelectedArticle(article)
+    setTitle(article.title)
+    setContent(article.content)
+    setCategory(article.article_category.id.toString())
+    setIsEditModalOpen(true)
+  }
 
   const openDeleteModal = (article: Article) => {
-    setSelectedArticle(article);
-    setIsDeleteModalOpen(true);
-  };
+    setSelectedArticle(article)
+    setIsDeleteModalOpen(true)
+  }
 
   const handleDelete = async () => {
+    if (!selectedArticle) return
+
     try {
-      await dispatch(deleteArticle(selectedArticle!.id));
+      await dispatch(deleteArticle(selectedArticle.id))
       dispatch(
         showNotification({
           type: 'info',
           message: 'Article deleted successfully',
         })
-      );
+      )
+      setIsDeleteModalOpen(false)
     } catch (error) {
-      console.log(error);
+      console.log(error)
       dispatch(
         showNotification({
           type: 'error',
           message: 'Failed to delete article',
           description: (error as Error).message,
         })
-      );
+      )
     }
-  };
+  }
+
+  const resetForm = () => {
+    setTitle('')
+    setContent('')
+    setCategory('')
+    setImage(null)
+    setSelectedArticle(null)
+  }
 
   return (
     <div className="bg-gray-100 min-h-screen">
       <ActionBar />
-      <Card 
-        title='Articles'
-      >
+      <Card title='Articles'>
         <DataTable 
           hoverable
           striped
@@ -156,7 +193,7 @@ const ArticlesPage = () => {
               <IconTextButton 
                 icon={Edit}
                 text='Edit'
-                onClick={() => setIsAddModalOpen(true)}
+                onClick={() => openEditModal(row)}
               />
               <IconTextButton 
                 icon={Trash}
@@ -169,7 +206,11 @@ const ArticlesPage = () => {
         />
       </Card>
 
-      <Modal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} title='Add Article'>
+      <Modal isOpen={isAddModalOpen || isEditModalOpen} onClose={() => {
+        setIsAddModalOpen(false)
+        setIsEditModalOpen(false)
+        resetForm()
+      }} title={isEditModalOpen ? 'Edit Article' : 'Add Article'}>
         <Input 
           label='Title'
           placeholder='Title'
@@ -192,33 +233,31 @@ const ArticlesPage = () => {
         <Select 
           placeholder='Category'
           icon={FolderTree}
-          options={categories.map(cat => {
-            return {
-              label: cat.name,
-              value: cat.id
-            }
-          })}
+          options={categories.map(cat => ({
+            label: cat.name,
+            value: cat.id.toString()
+          }))}
           value={category}
-          onChange={(value) => {
-            setCategory(value as string)
-          }}
+          onChange={(value) => setCategory(value as string)}
         />
 
         <div className='mt-4'>
           <FileUpload 
-            onFileSelect={(file) => {
-              setImage(file[0]); 
-            }}
+            onFileSelect={(file) => setImage(file[0])}
+            mode="single"
           />
         </div>
 
         <div className="flex justify-end gap-2 mt-4">
-
-          <Button variant='outline' color="gray" onClick={() => setIsAddModalOpen(false)}>
+          <Button variant='outline' color="gray" onClick={() => {
+            setIsAddModalOpen(false)
+            setIsEditModalOpen(false)
+            resetForm()
+          }}>
             Cancel
           </Button>
-          <Button color="blue" onClick={handleAdd}>
-            Create
+          <Button color="blue" onClick={isEditModalOpen ? handleEdit : handleAdd}>
+            {isEditModalOpen ? 'Update' : 'Create'}
           </Button>
         </div>
       </Modal>

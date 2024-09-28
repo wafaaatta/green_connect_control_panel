@@ -1,89 +1,43 @@
-"use client"
-
-import React, { useState, useCallback, useEffect, useRef } from 'react'
-import { X, ZoomIn, ZoomOut, RotateCw, Minimize, Maximize } from 'lucide-react'
+import React, { useState, useRef, useEffect } from 'react'
+import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion'
+import { ZoomIn, ZoomOut, RotateCcw, X, ChevronLeft, ChevronRight } from 'lucide-react'
 
 interface ImageControlProps {
   src: string
   alt: string
+  className?: string
 }
 
-const ZOOM_LEVELS = [0.5, 1, 1.5, 2, 2.5, 3]
-
-export default function ImageControl({ src, alt }: ImageControlProps) {
-  const [isOpen, setIsOpen] = useState(false)
-  const [zoomIndex, setZoomIndex] = useState(1) // Default to 100%
+const ImageControl: React.FC<ImageControlProps> = ({ src, alt, className = '' }) => {
+  const [isZoomed, setIsZoomed] = useState(false)
+  const [scale, setScale] = useState(1)
   const [rotation, setRotation] = useState(0)
-  const [position, setPosition] = useState({ x: 0, y: 0 })
-  const [isDragging, setIsDragging] = useState(false)
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
-  const imageRef = useRef<HTMLImageElement>(null)
-  const containerRef = useRef<HTMLDivElement>(null)
+  const constraintsRef = useRef<HTMLDivElement>(null)
 
-  const handleOpen = () => setIsOpen(true)
-  const handleClose = useCallback(() => {
-    setIsOpen(false)
-    setZoomIndex(1)
-    setRotation(0)
-    setPosition({ x: 0, y: 0 })
-  }, [])
+  const x = useMotionValue(0)
+  const y = useMotionValue(0)
 
-  const handleZoomIn = () => setZoomIndex((prev) => Math.min(prev + 1, ZOOM_LEVELS.length - 1))
-  const handleZoomOut = () => setZoomIndex((prev) => Math.max(prev - 1, 0))
-  const handleRotate = () => setRotation((prev) => (prev + 90) % 360)
-  const handleReset = () => {
-    setZoomIndex(1)
-    setRotation(0)
-    setPosition({ x: 0, y: 0 })
-  }
-
-  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.button !== 0) return // Only left mouse button
-    setIsDragging(true)
-    setDragStart({ x: e.clientX - position.x, y: e.clientY - position.y })
-  }
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!isDragging || !imageRef.current || !containerRef.current) return
-
-    const newX = e.clientX - dragStart.x
-    const newY = e.clientY - dragStart.y
-
-    // Calculate boundaries
-    const containerRect = containerRef.current.getBoundingClientRect()
-    const imageRect = imageRef.current.getBoundingClientRect()
-
-    const maxX = (imageRect.width * ZOOM_LEVELS[zoomIndex] - containerRect.width) / 2
-    const maxY = (imageRect.height * ZOOM_LEVELS[zoomIndex] - containerRect.height) / 2
-
-    setPosition({
-      x: Math.max(-maxX, Math.min(maxX, newX)),
-      y: Math.max(-maxY, Math.min(maxY, newY)),
-    })
-  }
-
-  const handleMouseUp = () => {
-    setIsDragging(false)
-  }
+  const rotateX = useTransform(y, [-100, 100], [30, -30])
+  const rotateY = useTransform(x, [-100, 100], [-30, 30])
 
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (isOpen) {
-        switch (e.key) {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (isZoomed) {
+        switch (event.key) {
           case 'Escape':
-            handleClose()
+            setIsZoomed(false)
             break
-          case '+':
-            handleZoomIn()
+          case 'ArrowUp':
+            setScale(prev => Math.min(prev + 0.1, 3))
             break
-          case '-':
-            handleZoomOut()
+          case 'ArrowDown':
+            setScale(prev => Math.max(prev - 0.1, 0.5))
             break
-          case 'r':
-            handleRotate()
+          case 'ArrowLeft':
+            setRotation(prev => prev - 15)
             break
-          case '0':
-            handleReset()
+          case 'ArrowRight':
+            setRotation(prev => prev + 15)
             break
         }
       }
@@ -91,93 +45,96 @@ export default function ImageControl({ src, alt }: ImageControlProps) {
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [isOpen, handleClose])
+  }, [isZoomed])
 
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = 'auto'
-    }
-    return () => {
-      document.body.style.overflow = 'auto'
-    }
-  }, [isOpen])
+  const handleZoomIn = () => setScale(prev => Math.min(prev + 0.1, 3))
+  const handleZoomOut = () => setScale(prev => Math.max(prev - 0.1, 0.5))
+  const handleRotateLeft = () => setRotation(prev => prev - 15)
+  const handleRotateRight = () => setRotation(prev => prev + 15)
+  const handleReset = () => {
+    setScale(1)
+    setRotation(0)
+    x.set(0)
+    y.set(0)
+  }
 
   return (
     <>
       <img
         src={src}
         alt={alt}
-        className="cursor-pointer transition-transform hover:scale-105"
-        onClick={handleOpen}
+        className={`cursor-zoom-in ${className}`}
+        onClick={() => setIsZoomed(true)}
       />
-      {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 transition-opacity">
-          <div
-            ref={containerRef}
-            className="relative max-w-4xl max-h-[90vh] w-full h-full overflow-hidden"
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
+      <AnimatePresence>
+        {isZoomed && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 backdrop-blur-sm"
+            onClick={() => setIsZoomed(false)}
           >
-            <img
-              ref={imageRef}
-              src={src}
-              alt={alt}
-              className="absolute top-1/2 left-1/2 max-w-none max-h-none object-contain transition-all duration-300 ease-in-out"
-              style={{
-                transform: `translate(-50%, -50%) scale(${ZOOM_LEVELS[zoomIndex]}) rotate(${rotation}deg) translate(${position.x}px, ${position.y}px)`,
-                cursor: isDragging ? 'grabbing' : 'grab',
-              }}
-            />
-          </div>
-          <div className="absolute top-4 right-4 flex space-x-2">
-            <button
-              onClick={handleZoomOut}
-              className="p-2 bg-white bg-opacity-75 rounded-full hover:bg-opacity-100 transition-colors"
-              aria-label="Zoom out"
-              disabled={zoomIndex === 0}
+            <motion.div
+              className="relative w-full h-full max-w-4xl max-h-4xl overflow-hidden"
+              ref={constraintsRef}
             >
-              <ZoomOut className="w-6 h-6 text-gray-800" />
-            </button>
+              <motion.img
+                src={src}
+                alt={alt}
+                drag
+                dragConstraints={constraintsRef}
+                dragElastic={0.05}
+                whileTap={{ cursor: 'grabbing' }}
+                style={{
+                  scale,
+                  rotateX,
+                  rotateY,
+                  rotate: rotation,
+                  x,
+                  y,
+                }}
+                className="w-full h-full object-contain cursor-grab"
+                onClick={(e) => e.stopPropagation()}
+              />
+            </motion.div>
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+              <ControlButton onClick={handleZoomIn} icon={ZoomIn} label="Zoom in" />
+              <ControlButton onClick={handleZoomOut} icon={ZoomOut} label="Zoom out" />
+              <ControlButton onClick={handleRotateLeft} icon={ChevronLeft} label="Rotate left" />
+              <ControlButton onClick={handleRotateRight} icon={ChevronRight} label="Rotate right" />
+              <ControlButton onClick={handleReset} icon={RotateCcw} label="Reset" />
+            </div>
             <button
-              onClick={handleZoomIn}
-              className="p-2 bg-white bg-opacity-75 rounded-full hover:bg-opacity-100 transition-colors"
-              aria-label="Zoom in"
-              disabled={zoomIndex === ZOOM_LEVELS.length - 1}
+              className="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors"
+              onClick={() => setIsZoomed(false)}
             >
-              <ZoomIn className="w-6 h-6 text-gray-800" />
+              <X size={24} />
+              <span className="sr-only">Close</span>
             </button>
-            <button
-              onClick={handleRotate}
-              className="p-2 bg-white bg-opacity-75 rounded-full hover:bg-opacity-100 transition-colors"
-              aria-label="Rotate"
-            >
-              <RotateCw className="w-6 h-6 text-gray-800" />
-            </button>
-            <button
-              onClick={handleReset}
-              className="p-2 bg-white bg-opacity-75 rounded-full hover:bg-opacity-100 transition-colors"
-              aria-label="Reset"
-            >
-              {zoomIndex === 1 ? (
-                <Minimize className="w-6 h-6 text-gray-800" />
-              ) : (
-                <Maximize className="w-6 h-6 text-gray-800" />
-              )}
-            </button>
-            <button
-              onClick={handleClose}
-              className="p-2 bg-white bg-opacity-75 rounded-full hover:bg-opacity-100 transition-colors"
-              aria-label="Close"
-            >
-              <X className="w-6 h-6 text-gray-800" />
-            </button>
-          </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   )
 }
+
+interface ControlButtonProps {
+  onClick: () => void
+  icon: React.ElementType
+  label: string
+}
+
+const ControlButton: React.FC<ControlButtonProps> = ({ onClick, icon: Icon, label }) => (
+  <motion.button
+    whileHover={{ scale: 1.1 }}
+    whileTap={{ scale: 0.9 }}
+    className="bg-white bg-opacity-20 hover:bg-opacity-30 text-white p-2 rounded-full backdrop-blur-sm transition-colors"
+    onClick={onClick}
+  >
+    <Icon size={20} />
+    <span className="sr-only">{label}</span>
+  </motion.button>
+)
+
+export default ImageControl

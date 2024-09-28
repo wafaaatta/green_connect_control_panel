@@ -248,7 +248,9 @@ const EventsPage: React.FC = () => {
             { id: 'description', key: 'description', title: 'Description' },
             { id: 'organized_by', key: 'organized_by', title: 'Organizer' },
             { id: 'location', key: 'location', title: 'Location' },
-            { id: 'event_date', key: 'event_date', title: 'Event Date', sortable: true }
+            { id: 'event_date', key: 'event_date', title: 'Event Date', sortable: true, render(value, row) {
+              return moment(value).format('YYYY-MM-DD HH:mm')
+            }, }
           ]}
           actions={(row) => (
             <div className="flex space-x-2">
