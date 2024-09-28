@@ -8,6 +8,7 @@ import announce_store from './stores/announce_store';
 import auth_store from './stores/auth_store';
 import statistics_store from './stores/statistics_store';
 import manager_store from './stores/manager_store';
+import contact_submission_store from './stores/contact_submission_store';
 
 
 const rootReducer = combineReducers({
@@ -19,7 +20,8 @@ const rootReducer = combineReducers({
     announce_store: announce_store,
     auth_store: auth_store,
     statistics_store: statistics_store,
-    manager_store: manager_store
+    manager_store: manager_store,
+    contact_submission_store: contact_submission_store
 });
 
 export default rootReducer;

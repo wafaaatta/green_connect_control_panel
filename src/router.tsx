@@ -12,6 +12,7 @@ import ManagersPage from "./views/Managers";
 import AdminLoginPage from "./views/Login";
 import ManageAuthorizations from "./views/ManageAuthorizations";
 import RequireAuth from "./components/RequireAuth";
+import ContactSubmissions from "./views/ContactSubmissions";
 
 const router = createBrowserRouter([
     {
@@ -57,6 +58,10 @@ const router = createBrowserRouter([
             {
                 path: AppRoutes.MANAGER_AUTHORIZATIONS,
                 element: <ManageAuthorizations />
+            },
+            {
+                path: AppRoutes.CONTACT_SUBMISSIONS,
+                element: <ContactSubmissions />
             },
         ]
     }

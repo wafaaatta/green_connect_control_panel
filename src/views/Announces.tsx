@@ -14,14 +14,7 @@ import Modal from '../components/Modal'
 import { DangerModal } from '../components/DangerModal'
 import { showNotification } from '../redux/stores/notification_store'
 import { unwrapResult } from '@reduxjs/toolkit'
-
-interface Announce {
-  id: number
-  title: string
-  description: string
-  location: string
-  status: 'pending' | 'accepted' | 'rejected'
-}
+import Announce from '../interfaces/Announce'
 
 const AnnouncesPage = () => {
   const dispatch = useAppDispatch()
@@ -195,7 +188,18 @@ const AnnouncesPage = () => {
                   <div className="max-w-sm text-wrap">{row.description}</div>
                 )
               },},
-              { id: 'location', title: 'Location', key: 'location' },
+              { id: 'country', title: 'Country', key: 'country' },
+              { id: 'city', title: 'City', key: 'city' },
+              { id: 'postal_code', title: 'Postal Code', key: 'postal_code' },
+              { id: 'request_type', title: 'Request Type', key: 'request_type', render(value, row) {
+                return (
+                  <div
+                    className="flex items-center justify-center bg-blue-100 text-blue-700 px-2 py-1 rounded text-sm font-semibold"
+                  >
+                    {row.request_type === null ? 'Nothing' : row.request_type === 'creation' ? 'Creation' : 'Modification'}
+                  </div>
+                )
+              }, },
               { id: 'status', title: 'Status', key: 'status', render(value, row) {
                 return mapStatusToTag(row.status)
               }, },

@@ -60,13 +60,12 @@ const AdminDashboard = () => {
 
         {/* Article Categories */}
         <ChartCard title="Article Categories Distribution">
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={300} >
             <BarChart data={state.articlesByCategory}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-              <XAxis dataKey="category" stroke="#718096" angle={-45} textAnchor="end" />
+              <XAxis dataKey="category" stroke="#718096" className='text-sm' textAnchor="end" />
               <YAxis stroke="#718096" />
               <Tooltip />
-              <Legend wrapperStyle={{ marginTop: 20 }} />
               <Bar dataKey="count" fill="#70AE6E" />
             </BarChart>
           </ResponsiveContainer>
