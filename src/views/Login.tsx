@@ -1,7 +1,5 @@
-"use client"
-
 import React, { useState } from 'react'
-import { Eye, EyeOff, Mail, Lock, Leaf } from 'lucide-react'
+import { Eye, EyeOff, Mail, Lock } from 'lucide-react'
 import { useAppDispatch } from '../hooks/hooks'
 import { loginManager } from '../redux/stores/auth_store'
 import { showNotification } from '../redux/stores/notification_store'

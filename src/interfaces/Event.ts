@@ -2,8 +2,7 @@ interface Event {
     id: number
     title: string
     description: string
-    date: string
-    time: string
+    event_date: string
     location: string
     image: string
 }

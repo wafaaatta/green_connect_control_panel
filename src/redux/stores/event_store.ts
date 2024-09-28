@@ -47,6 +47,25 @@ export const deleteEvent = createAsyncThunk(
     }
 )
 
+interface UpdateEventPayload {
+    id: number
+    data: FormData
+}
+
+export const updateEvent = createAsyncThunk(
+    'event/updateEvent',
+    async (payload: UpdateEventPayload) => {
+        try{
+            const response = await axiosHttp.post(`/events/${payload.id}?_method=PUT`, payload.data)
+            console.log(response.data);
+            
+            return response.data
+        }catch(error){
+            throw ApiError.from(error as AxiosError)
+        }
+    }
+)
+
 const eventSlice = createSlice({
     name: 'event',
     initialState,
@@ -87,6 +106,19 @@ const eventSlice = createSlice({
                 state.events = state.events.filter(event => event.id !== action.payload.id)
             })
             .addCase(deleteEvent.rejected, (state, action) => {
+                state.loading = false
+                state.error = action.error.message || 'Something went wrong'
+            })
+
+
+            .addCase(updateEvent.pending, (state) => {
+                state.loading = true
+            })
+            .addCase(updateEvent.fulfilled, (state, action) => {
+                state.loading = false
+                state.events = state.events.map(event => event.id === action.payload.id ? action.payload : event)
+            })
+            .addCase(updateEvent.rejected, (state, action) => {
                 state.loading = false
                 state.error = action.error.message || 'Something went wrong'
             })

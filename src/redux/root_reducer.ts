@@ -6,6 +6,7 @@ import event_store from './stores/event_store';
 import user_store from './stores/user_store';
 import announce_store from './stores/announce_store';
 import auth_store from './stores/auth_store';
+import statistics_store from './stores/statistics_store';
 
 
 const rootReducer = combineReducers({
