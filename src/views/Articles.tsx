@@ -177,7 +177,13 @@ const ArticlesPage: React.FC = () => {
           columns={[
             { title: 'ID', key: 'id', id: 'id' },
             { title: 'Title', key: 'title', id: 'title' },
-            { title: 'Content', key: 'content', id: 'content' },
+            { title: 'Content', key: 'content', id: 'content',align: 'left', render(value, row) {
+              return (
+                <div className="max-w-sm break-words leading-relaxed text-wrap">
+                  {value}
+                </div>
+              )
+            }, },
             { title: 'Category', key: ['article_category', 'name'], id: 'category' },
             { title: 'Image', key: 'image', id: 'image' , render(value, row) {
               return (

@@ -27,8 +27,8 @@ export const acceptAnnounce = createAsyncThunk(
     'announce/acceptAnnounce',
     async (id: number) => {
         try{
-            const response = await axiosHttp.patch(`/announces/${id}`)
-            return response.data
+            await axiosHttp.post(`/announces/${id}/accept`)
+            return id
         }catch(error){
             throw ApiError.from(error as AxiosError)
         }
@@ -39,8 +39,8 @@ export const rejectAnnounce = createAsyncThunk(
     'announce/rejectAnnounce',
     async (id: number) => {
         try{
-            const response = await axiosHttp.patch(`/announces/${id}`)
-            return response.data
+            await axiosHttp.post(`announces/${id}/reject`)
+            return id
         }catch(error){
             throw ApiError.from(error as AxiosError)
         }
@@ -71,7 +71,12 @@ const announceSlice = createSlice({
             })
             .addCase(acceptAnnounce.fulfilled, (state, action) => {
                 state.loading = false
-                state.announces = action.payload
+                state.announces = state.announces.map(announce => {
+                    if(announce.id === action.payload){
+                        return {...announce, status: 'accepted'}
+                    }
+                    return announce
+                })
             })
             .addCase(acceptAnnounce.rejected, (state, action) => {
                 state.loading = false
@@ -84,7 +89,12 @@ const announceSlice = createSlice({
             })
             .addCase(rejectAnnounce.fulfilled, (state, action) => {
                 state.loading = false
-                state.announces = action.payload
+                state.announces = state.announces.map(announce => {
+                    if(announce.id === action.payload){
+                        return {...announce, status: 'rejected'}
+                    }
+                    return announce
+                })
             })
             .addCase(rejectAnnounce.rejected, (state, action) => {
                 state.loading = false
