@@ -10,6 +10,7 @@ import {
   Package,
   User,
   Layout,
+  Mail,
 } from 'lucide-react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import AppRoutes from '../constants/app_routes';
@@ -182,9 +183,8 @@ const menuItems: MenuItem[] = [
   { icon: <MdCampaign size={20} />, title: "Events", path: AppRoutes.EVENTS },
   { icon: <RiFilePaper2Line size={20} />, title: "Announces", path: AppRoutes.ANNOUNCES },
   { icon: <User size={20} />, title: "Users", path: AppRoutes.USERS },
-  { icon: <Layout size={20} />, title: "Managers", subItems: [
-    { title: "All Managers", path: AppRoutes.MANAGERS },
-  ]},
+  { icon: <Layout size={20} />, title: "All Managers", path: AppRoutes.MANAGERS },
+  { icon: <Mail size={20} />, title: "Contact Submissions", path: AppRoutes.CONTACT_SUBMISSIONS },
   {
     icon: <File size={20}/>, title: 'Article Management',
     subItems: [

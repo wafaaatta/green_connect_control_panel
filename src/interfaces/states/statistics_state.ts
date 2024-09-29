@@ -7,6 +7,7 @@ interface StatisticsState extends ApiInterface{
         managers: number;
         users: number;
         announces: number;
+        contact_submissions: number
     };
     userGraph: Array<{
         count: number,

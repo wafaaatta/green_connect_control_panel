@@ -245,8 +245,13 @@ const EventsPage: React.FC = () => {
               ),
             },
             { id: 'title', key: 'title', title: 'Title', sortable: true },
-            { id: 'description', key: 'description', title: 'Description' },
-            { id: 'organized_by', key: 'organized_by', title: 'Organizer' },
+            { id: 'description', key: 'description', title: 'Description', sortable: true, render(value, row) {
+              return <div className="text-wrap max-w-md">
+                {value}
+              </div>
+            }, },
+            { id: 'organized_by', key: 'organized_by', title: 'Organizer', sortable: true },
+            { id: 'organizer_email', key: 'organizer_email', title: 'Organizer Email', sortable: true },
             { id: 'location', key: 'location', title: 'Location' },
             { id: 'event_date', key: 'event_date', title: 'Event Date', sortable: true, render(value, row) {
               return moment(value).format('YYYY-MM-DD HH:mm')

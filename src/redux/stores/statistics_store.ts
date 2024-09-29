@@ -10,7 +10,8 @@ const initalState: StatisticsState = {
         events: 0,
         managers: 0,
         users: 0,
-        announces: 0
+        announces: 0,
+        contact_submissions: 0
     },
     userGraph: [],
     groupedStatistics: [],

@@ -24,7 +24,7 @@ const ContactSubmissions = () => {
             <Breadcrumb items={breadcrumbItems} />
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-lg font-semibold text-gray-800">Total Submissions: </span>
-              <span className="text-lg font-semibold text-[#0096c7]">5</span>
+              <span className="text-lg font-semibold text-[#0096c7]">{contact_submissions.length}</span>
             </div>
           </div>
         </div>
