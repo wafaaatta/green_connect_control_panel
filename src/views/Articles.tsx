@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Search, Filter, Edit, Trash, Eye, Plus, Text, FolderTree } from 'lucide-react'
+import { Edit, Trash, Plus, Text, FolderTree } from 'lucide-react'
 import { Card } from '../components/Card'
 import { DataTable } from '../components/DataTable'
 import { Breadcrumb } from '../components/Breadcrumb'
@@ -18,6 +18,7 @@ import { showNotification } from '../redux/stores/notification_store'
 import { getFileUrl } from '../utils/laravel_storage'
 import ImageControl from '../components/ImageControl'
 import Article from '../interfaces/Article'
+import { IconType } from 'react-icons'
 
 const breadcrumbItems = [
   { label: 'Dashboard', href: '/' },
@@ -48,7 +49,7 @@ const ArticlesPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
         <Breadcrumb items={breadcrumbItems} />
         <div className="flex flex-wrap items-center gap-2">
-          <Button color="blue" leftIcon={Plus} size="sm" onClick={() => setIsAddModalOpen(true)}>
+          <Button color="blue" leftIcon={Plus as IconType} size="sm" onClick={() => setIsAddModalOpen(true)}>
             New Article
           </Button>
         </div>
@@ -177,15 +178,15 @@ const ArticlesPage: React.FC = () => {
           columns={[
             { title: 'ID', key: 'id', id: 'id' },
             { title: 'Title', key: 'title', id: 'title' },
-            { title: 'Content', key: 'content', id: 'content',align: 'left', render(value, row) {
+            { title: 'Content', key: 'content', id: 'content',align: 'left', render(_, row) {
               return (
                 <div className="max-w-sm break-words leading-relaxed text-wrap">
-                  {value}
+                  {row.content}
                 </div>
               )
             }, },
             { title: 'Category', key: ['article_category', 'name'], id: 'category' },
-            { title: 'Image', key: 'image', id: 'image' , render(value, row) {
+            { title: 'Image', key: 'image', id: 'image' , render(_, row) {
               return (
                 <div className="w-20 h-20">
                   <ImageControl src={getFileUrl(row.image)} alt="image" />
@@ -197,12 +198,12 @@ const ArticlesPage: React.FC = () => {
           actions={(row) => (
             <div className="flex gap-2">
               <IconTextButton 
-                icon={Edit}
+                icon={Edit as IconType}
                 text='Edit'
                 onClick={() => openEditModal(row)}
               />
               <IconTextButton 
-                icon={Trash}
+                icon={Trash as IconType}
                 text='Delete'
                 color='red'
                 onClick={() => openDeleteModal(row)}
@@ -221,7 +222,7 @@ const ArticlesPage: React.FC = () => {
           label='Title'
           placeholder='Title'
           required
-          icon={Text}
+          icon={Text as IconType}
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
@@ -231,14 +232,15 @@ const ArticlesPage: React.FC = () => {
           placeholder='Content'
           rows={5}
           required
-          icon={Text}
+          icon={Text as IconType}
           value={content}
           onChange={(e) => setContent(e.target.value)}
         />
 
         <Select 
+          label='Category'
           placeholder='Category'
-          icon={FolderTree}
+          icon={FolderTree as IconType}
           options={categories.map(cat => ({
             label: cat.name,
             value: cat.id.toString()

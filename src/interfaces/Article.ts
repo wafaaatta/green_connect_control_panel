@@ -6,6 +6,7 @@ interface Article {
     content: string
     image: string
     views: number
+    article_category: ArticleCategory
     category: ArticleCategory
 }
 

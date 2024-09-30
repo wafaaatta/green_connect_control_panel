@@ -1,4 +1,4 @@
-import { Search, Filter, Edit, Trash, UserPlus, Plus, RefreshCcw } from 'lucide-react'
+import { Trash, RefreshCcw } from 'lucide-react'
 import { Card } from '../components/Card'
 import IconTextButton from '../components/IconTextButton'
 import { DataTable } from '../components/DataTable'
@@ -7,6 +7,7 @@ import Button from '../components/Button'
 import { useAppDispatch, useAppSelector } from '../hooks/hooks'
 import { useEffect } from 'react'
 import { getAllUsers } from '../redux/stores/user_store'
+import { IconType } from 'react-icons'
 
 
 const UsersPage = () => {
@@ -28,7 +29,7 @@ const UsersPage = () => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
         <Breadcrumb items={breadcrumbItems} />
         <div className="flex flex-wrap items-center gap-2">
-          <Button color="blue" leftIcon={RefreshCcw} size="sm" onClick={() => {}}>
+          <Button color="blue" leftIcon={RefreshCcw as IconType} size="sm" onClick={() => {}}>
             Refresh Data
           </Button>
         </div>
@@ -56,10 +57,10 @@ const UsersPage = () => {
             { id: 'name', key: 'name', title: 'Name' },
             { id: 'email', key: 'email', title: 'Email' },
           ]}
-          actions={(row) => (
+          actions={() => (
             <>
               <IconTextButton
-                icon={Trash}
+                icon={Trash as IconType}
                 color="red"
               />
             </>

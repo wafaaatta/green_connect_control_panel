@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Calendar, Search, Filter, MapPin, Clock, Users, Plus, Edit, Trash, Text } from 'lucide-react'
+import { Calendar, Clock, Users, Plus, Edit, Trash, Text } from 'lucide-react'
 import { Card } from '../components/Card'
 import { Breadcrumb } from '../components/Breadcrumb'
 import Button from '../components/Button'
@@ -21,6 +21,7 @@ import moment from 'moment'
 import { isEmptyArray } from '../utils/array_utils'
 import { unwrapResult } from '@reduxjs/toolkit'
 import { getFileUrl } from '../utils/laravel_storage'
+import { IconType } from 'react-icons'
 
 const EventsPage: React.FC = () => {
   const breadcrumbItems = [
@@ -51,7 +52,7 @@ const EventsPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
         <Breadcrumb items={breadcrumbItems} />
         <div className="flex flex-wrap items-center gap-2">
-          <Button color="blue" leftIcon={Plus} size="sm" onClick={() => setIsAddModalOpen(true)}>
+          <Button color="blue" leftIcon={Plus as IconType} size="sm" onClick={() => setIsAddModalOpen(true)}>
             New Event
           </Button>
         </div>
@@ -245,27 +246,27 @@ const EventsPage: React.FC = () => {
               ),
             },
             { id: 'title', key: 'title', title: 'Title', sortable: true },
-            { id: 'description', key: 'description', title: 'Description', sortable: true, render(value, row) {
+            { id: 'description', key: 'description', title: 'Description', sortable: true, render(_, row) {
               return <div className="text-wrap max-w-md">
-                {value}
+                {row.description}
               </div>
             }, },
             { id: 'organized_by', key: 'organized_by', title: 'Organizer', sortable: true },
             { id: 'organizer_email', key: 'organizer_email', title: 'Organizer Email', sortable: true },
             { id: 'location', key: 'location', title: 'Location' },
-            { id: 'event_date', key: 'event_date', title: 'Event Date', sortable: true, render(value, row) {
-              return moment(value).format('YYYY-MM-DD HH:mm')
+            { id: 'event_date', key: 'event_date', title: 'Event Date', sortable: true, render(_, row) {
+              return moment(row.event_date).format('YYYY-MM-DD HH:mm')
             }, }
           ]}
           actions={(row) => (
             <div className="flex space-x-2">
               <IconTextButton
-                icon={Edit}
+                icon={Edit as IconType}
                 color="blue"
                 onClick={() => openEditModal(row)}
               />
               <IconTextButton
-                icon={Trash}
+                icon={Trash as IconType}
                 color="red"
                 onClick={() => openDeleteModal(row)}
               />
@@ -381,14 +382,14 @@ const EventForm: React.FC<EventFormProps> = ({
     <Input
       label="Title"
       placeholder='Enter Title'
-      icon={Text}
+      icon={Text as IconType}
       value={title}
       onChange={(e) => setTitle(e.target.value)}
     />
     <TextArea
       label="Description"
       placeholder='Enter Description'
-      icon={Text}
+      icon={Text as IconType}
       rows={4}
       value={description}
       onChange={(e) => setDescription(e.target.value)}
@@ -408,14 +409,14 @@ const EventForm: React.FC<EventFormProps> = ({
     <Input
       label="Organizer"
       placeholder='Enter Organizer'
-      icon={Text}
+      icon={Text as IconType}
       value={organizer}
       onChange={(e) => setOrganizer(e.target.value)}
     />
     <Input
       label="Location"
       placeholder='Enter Location'
-      icon={Text}
+      icon={Text as IconType}
       value={location}
       onChange={(e) => setLocation(e.target.value)}
     />

@@ -15,6 +15,7 @@ import { DangerModal } from '../components/DangerModal'
 import { showNotification } from '../redux/stores/notification_store'
 import { unwrapResult } from '@reduxjs/toolkit'
 import Announce from '../interfaces/Announce'
+import { IconType } from 'react-icons'
 
 const AnnouncesPage = () => {
   const dispatch = useAppDispatch()
@@ -156,7 +157,7 @@ const AnnouncesPage = () => {
               )}
             </AnimatePresence>
           </div>
-          <Button color="blue" leftIcon={RefreshCcw} size="sm" onClick={() => dispatch(getAllAnnounces())}>
+          <Button color="blue" leftIcon={RefreshCcw as IconType} size="sm" onClick={() => dispatch(getAllAnnounces())}>
             Refresh Data
           </Button>
         </div>
@@ -183,7 +184,7 @@ const AnnouncesPage = () => {
             showColumnSelector
             columns={[
               { id: 'title', title: 'Title', key: 'title' },
-              { id: 'description', title: 'Description' , key: 'description', render(value, row) {
+              { id: 'description', title: 'Description' , key: 'description', render(_, row) {
                 return (
                   <div className="max-w-sm text-wrap">{row.description}</div>
                 )
@@ -191,7 +192,7 @@ const AnnouncesPage = () => {
               { id: 'country', title: 'Country', key: 'country' },
               { id: 'city', title: 'City', key: 'city' },
               { id: 'postal_code', title: 'Postal Code', key: 'postal_code' },
-              { id: 'request_type', title: 'Request Type', key: 'request_type', render(value, row) {
+              { id: 'request_type', title: 'Request Type', key: 'request_type', render(_, row) {
                 return (
                   <div
                     className="flex items-center justify-center bg-blue-100 text-blue-700 px-2 py-1 rounded text-sm font-semibold"
@@ -200,7 +201,7 @@ const AnnouncesPage = () => {
                   </div>
                 )
               }, },
-              { id: 'status', title: 'Status', key: 'status', render(value, row) {
+              { id: 'status', title: 'Status', key: 'status', render(_, row) {
                 return mapStatusToTag(row.status)
               }, },
             ]}
@@ -208,12 +209,12 @@ const AnnouncesPage = () => {
               row.status === 'pending' && (
                 <div className="flex flex-wrap items-center gap-2">
                   <IconTextButton 
-                    icon={Check}
+                    icon={Check as IconType}
                     text='Accept'
                     onClick={() => handleAccept(row)}
                   />
                   <IconTextButton 
-                    icon={Trash2}
+                    icon={Trash2 as IconType}
                     text='Reject'
                     color='red' 
                     onClick={() => handleReject(row)}

@@ -1,5 +1,4 @@
-import React from 'react'
-import { ArrowLeft, Calendar, User, Tag, Eye, ThumbsUp, MessageSquare, Share2 } from 'lucide-react'
+import { Calendar, User, Tag, Eye, ThumbsUp, MessageSquare, Share2 } from 'lucide-react'
 
 const ViewArticlePage = () => {
   const article = {

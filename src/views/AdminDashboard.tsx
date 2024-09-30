@@ -1,12 +1,11 @@
-"use client"
 
 import React, { useEffect } from 'react'
-import { Users, Calendar, Bell, FileText, Briefcase, TrendingUp, ArrowUp, ArrowDown, Leaf, MessageSquare, Mails } from 'lucide-react'
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell, AreaChart, Area } from 'recharts'
+import { Users, Calendar, Bell, FileText, Briefcase, Mails } from 'lucide-react'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area } from 'recharts'
 import { useAppDispatch, useAppSelector } from '../hooks/hooks'
 import { getStatistics } from '../redux/stores/statistics_store'
+import { IconType } from 'react-icons'
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8']
 
 const AdminDashboard = () => {
   const dispatch = useAppDispatch()
@@ -21,12 +20,12 @@ const AdminDashboard = () => {
       <div className="space-y-4">
         {/* Quick Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
-          <StatCard icon={<Users className="h-6 w-6" />} title="Total Users" value={state.statistics.users} change="+12%" positive={true} />
-          <StatCard icon={<Calendar className="h-6 w-6" />} title="Active Events" value={state.statistics.events} change="+2" positive={true} />
-          <StatCard icon={<Bell className="h-6 w-6" />} title="New Announces" value={state.statistics.announces} change="+5" positive={true} />
-          <StatCard icon={<FileText className="h-6 w-6" />} title="Total Articles" value={state.statistics.articles} change="+8%" positive={true} />
-          <StatCard icon={<Briefcase className="h-6 w-6" />} title="Managers" value={state.statistics.managers} change="0" positive={true} />
-          <StatCard icon={<Mails className="h-6 w-6" />} title="Contacts" value={state.statistics.contact_submissions} change="0" positive={true} />
+          <StatCard icon={Users as IconType} title="Total Users" value={state.statistics.users} />
+          <StatCard icon={Calendar as IconType} title="Active Events" value={state.statistics.events} />
+          <StatCard icon={Bell as IconType} title="New Announces" value={state.statistics.announces} />
+          <StatCard icon={FileText as IconType} title="Total Articles" value={state.statistics.articles} />
+          <StatCard icon={Briefcase as IconType} title="Managers" value={state.statistics.managers} />
+          <StatCard icon={Mails as IconType} title="Contacts" value={state.statistics.contact_submissions} />
         </div>
 
         {/* Charts */}
@@ -82,12 +81,18 @@ const AdminDashboard = () => {
   )
 }
 
-const StatCard = ({ icon, title, value, change, positive }) => (
+const StatCard = (
+  { icon: Icon, title, value }: {
+    icon: IconType,
+    title: string,
+    value: number,
+  }
+) => (
   <div className="bg-white overflow-hidden shadow rounded transition-all duration-300">
     <div className="p-4">
       <div className="flex items-center">
         <div className="flex-shrink-0 bg-green-100 rounded-full p-3">
-          {React.cloneElement(icon, { className: "h-6 w-6 text-green-600" })}
+          <Icon size={18} />
         </div>
         <div className="ml-5 w-0 flex-1">
           <dl>
@@ -103,7 +108,7 @@ const StatCard = ({ icon, title, value, change, positive }) => (
   </div>
 )
 
-const ChartCard = ({ title, children }) => (
+const ChartCard = ({ title, children }: { title: string, children: React.ReactNode }) => (
   <div className="bg-white p-4 rounded shadow">
     <h2 className="text-xl font-semibold mb-4 text-gray-800">{title}</h2>
     {children}

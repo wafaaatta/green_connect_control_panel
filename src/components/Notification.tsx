@@ -5,18 +5,18 @@ import { FaTimes, FaCheckCircle, FaInfoCircle, FaExclamationTriangle, FaExclamat
 import { motion, AnimatePresence } from 'framer-motion';
 import { hideNotification } from '../redux/stores/notification_store';
 
-const notificationIcons = {
-  success: <FaCheckCircle />,
-  info: <FaInfoCircle />,
-  warning: <FaExclamationTriangle />,
-  error: <FaExclamationCircle />,
+const notificationIcons: { [key: string]: JSX.Element } = {
+  'success': <FaCheckCircle />,
+  'info': <FaInfoCircle />,
+  'warning': <FaExclamationTriangle />,
+  'error': <FaExclamationCircle />,
 };
 
 const notificationStyles = {
-  success: 'bg-gradient-to-r from-green-400 to-green-600',
-  info: 'bg-gradient-to-r from-blue-400 to-blue-600',
-  warning: 'bg-gradient-to-r from-yellow-400 to-yellow-600',
-  error: 'bg-gradient-to-r from-red-400 to-red-600',
+  'success': 'bg-gradient-to-r from-green-400 to-green-600',
+  'info': 'bg-gradient-to-r from-blue-400 to-blue-600',
+  'warning': 'bg-gradient-to-r from-yellow-400 to-yellow-600',
+  'error': 'bg-gradient-to-r from-red-400 to-red-600',
 };
 
 const Notification = () => {
@@ -43,7 +43,7 @@ const Notification = () => {
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: 50 }}
           transition={{ duration: 0.4 }}
-          className={`fixed w-96 top-8 right-4 text-white p-2 rounded-md shadow-md z-50 flex items-start  ${notificationStyles[type]}`}
+          className={`fixed w-96 top-8 right-4 text-white p-2 rounded-md shadow-md z-50 flex items-start  ${notificationStyles[type as keyof typeof notificationStyles]}`}
         >
           <div className="flex items-center justify-center w-8 h-8 rounded-full bg-white/20 mr-2">
             <div className="text-xl">
@@ -67,3 +67,4 @@ const Notification = () => {
 };
 
 export default Notification;
+

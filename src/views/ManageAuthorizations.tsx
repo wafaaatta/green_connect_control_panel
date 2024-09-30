@@ -1,7 +1,6 @@
-"use client"
 
-import React, { useState, useEffect } from 'react'
-import { Check, X, Search, RefreshCw, Save, User, Shield } from 'lucide-react'
+import { useState } from 'react'
+import { Check, X, Search, RefreshCw, Save,  } from 'lucide-react'
 
 // Mock data for manager and authorizations
 const managerData = {

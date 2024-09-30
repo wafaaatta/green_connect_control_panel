@@ -11,6 +11,7 @@ import ContactSubmission from "../interfaces/ContactSubmission"
 import { showNotification } from "../redux/stores/notification_store"
 import { unwrapResult } from "@reduxjs/toolkit"
 import { DangerModal } from "../components/DangerModal"
+import { IconType } from "react-icons"
 
 const ContactSubmissions = () => {
     const breadcrumbItems = [
@@ -109,7 +110,7 @@ const ContactSubmissions = () => {
         actions={(row: ContactSubmission) => (
             <div className="flex flex-wrap items-center gap-2">
                 <IconTextButton 
-                    icon={Trash2}
+                    icon={Trash2 as IconType}
                     onClick={() => openDeleteModal(row)}
                     color="red"
                     text="Delete"

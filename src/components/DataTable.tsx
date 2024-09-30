@@ -68,9 +68,9 @@ export function DataTable<T>({
     }
   };
 
-  const getValue = useCallback((obj: unknown, key: KeyType): any => {
-    if (typeof key === 'string') return obj[key];
-    return key.reduce((acc, k) => acc && acc[k], obj);
+  const getValue = useCallback((obj: unknown, key: KeyType): number => {
+    if (typeof key === 'string') return (obj as { [key: string]: number })[key];
+    return key.reduce((acc, k) => acc && acc[k as unknown as number], 0);
   }, []);
 
   const sortedData = useMemo(() => {
@@ -127,7 +127,7 @@ export function DataTable<T>({
   useEffect(() => {
     const lowercasedSearchTerm = searchTerm.toLowerCase();
     const filtered = data.filter(item =>
-      Object.values(item).some(
+      Object.values(item as Record<string, unknown>).some(
         value =>
           value &&
           value.toString().toLowerCase().includes(lowercasedSearchTerm)

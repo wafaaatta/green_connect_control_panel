@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { FiUpload, FiX, FiFile, FiImage, FiFilm, FiMusic } from 'react-icons/fi'
+import { FiUpload, FiFile, FiImage, FiFilm, FiMusic } from 'react-icons/fi'
 
 interface FileUploadProps {
   onFileSelect: (files: File[]) => void

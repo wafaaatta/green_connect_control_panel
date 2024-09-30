@@ -57,13 +57,13 @@ const authSlice = createSlice({
             state.isAuthenticated = true
         })
 
-        builder.addCase(loginManager.rejected, (state, action) => {
+        builder.addCase(loginManager.rejected, (state) => {
             state.manager = null
             state.authorizations = []
             state.isAuthenticated = false
         })
 
-        builder.addCase(loginManager.pending, (state, action) => {
+        builder.addCase(loginManager.pending, (state) => {
             state.loading = true
         })
     }

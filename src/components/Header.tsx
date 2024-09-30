@@ -1,16 +1,13 @@
-"use client"
 
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Bell, Settings, User, Menu, X, Search, Home, Users, Calendar, FileText, BarChart2, LogOut, LogOutIcon } from 'lucide-react'
+import { Menu, X, Home, Users, Calendar, FileText, BarChart2, LogOutIcon } from 'lucide-react'
 import { useAppDispatch } from '../hooks/hooks'
 import { logout } from '../redux/stores/auth_store'
 import AppRoutes from '../constants/app_routes'
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isNotificationOpen, setIsNotificationOpen] = useState(false)
-  const [isProfileOpen, setIsProfileOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
@@ -86,7 +83,7 @@ const Header = () => {
               <Link
                 key={item.name}
                 to={item.path}
-                className="text-gray-700 hover:text-green-600 hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium flex items-center"
+                className="text-gray-700 hover:text-green-600 hover:bg-gray-100 px-3 py-2 rounded-md text-base font-medium flex items-center"
               >
                 <item.icon className="h-5 w-5 mr-2" />
                 {item.name}

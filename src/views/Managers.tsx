@@ -1,19 +1,19 @@
 "use client"
 
 import React, { useEffect, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Search, Plus, Edit, Trash, Shield, Mail, Phone, Calendar, Grid, List, Table as TableIcon, X, MailIcon, User, Lock } from 'lucide-react'
+import { motion } from 'framer-motion'
+import {  Plus, Edit, Trash, Shield, Mail, Grid, List, Table as TableIcon, MailIcon, User, Lock } from 'lucide-react'
 import { Card } from '../components/Card'
 import Modal from '../components/Modal'
 import { DangerModal } from '../components/DangerModal'
 import Input from '../components/Input'
-import Select from '../components/Select'
 import Button from '../components/Button'
 import { useAppDispatch, useAppSelector } from '../hooks/hooks'
 import { createManager, deleteManager, getAllManagers, updateManager } from '../redux/stores/manager_store'
 import Manager from './../interfaces/Manager';
 import { unwrapResult } from '@reduxjs/toolkit'
 import { showNotification } from '../redux/stores/notification_store'
+import { IconType } from 'react-icons'
 
 const ManagersPage: React.FC = () => {
   const [layout, setLayout] = useState<'grid' | 'list' | 'table'>('grid')
@@ -30,7 +30,7 @@ const ManagersPage: React.FC = () => {
       <h1 className="text-2xl font-bold text-gray-800">Managers</h1>
       <div className="flex flex-wrap items-center gap-4">
         <LayoutToggle />
-        <Button color="blue" leftIcon={Plus} onClick={() => setIsCreateModalOpen(true)}>
+        <Button color="blue" leftIcon={Plus as IconType} onClick={() => setIsCreateModalOpen(true)}>
           Add New Manager
         </Button>
       </div>
@@ -178,7 +178,11 @@ const ManagersPage: React.FC = () => {
   const handleUpdate = async () => {
     if (selectedManager) {
       await dispatch(
-        updateManager({ id: selectedManager.id, data: selectedManager })
+        updateManager({ id: selectedManager.id, data: {
+          name: '',
+          email: '',
+          password: ''
+        } })
       ).then(unwrapResult)
       .then(() => {
         dispatch(showNotification({ type: 'info', message: 'Manager updated successfully' }))
@@ -228,14 +232,14 @@ const ManagersPage: React.FC = () => {
       <Modal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} title="Add New Manager">
         <Input
           label="Name"
-          icon={User}
+          icon={User as IconType}
           value={newManager.name}
           onChange={(e) => setNewManager({ ...newManager, name: e.target.value })}
           placeholder="Enter manager's name"
         />
         <Input
           label="Email"
-          icon={Mail}
+          icon={Mail as IconType}
           value={newManager.email}
           onChange={(e) => setNewManager({ ...newManager, email: e.target.value })}
           placeholder="Enter manager's email"
@@ -244,7 +248,7 @@ const ManagersPage: React.FC = () => {
         <Input
           label="Password"
           placeholder='Enter password'
-          icon={Lock}
+          icon={Lock as IconType}
           value={newManager.password}
           onChange={(value) => setNewManager({ ...newManager, password: value.target.value })}
 
@@ -260,14 +264,14 @@ const ManagersPage: React.FC = () => {
           <>
             <Input
               label="Name"
-              icon={User}
+              icon={User as IconType}
               value={selectedManager.name}
               placeholder='Enter name'
               onChange={(e) => setSelectedManager({ ...selectedManager, name: e.target.value })}
             />
             <Input
               label="Email"
-              icon={MailIcon}
+              icon={MailIcon as IconType}
               value={selectedManager.email}
               placeholder='Enter email'
               onChange={(e) => setSelectedManager({ ...selectedManager, email: e.target.value })}
@@ -275,7 +279,7 @@ const ManagersPage: React.FC = () => {
             <Input
               label="Password"
               placeholder='Enter password'
-              icon={Shield}
+              icon={Shield as IconType}
               onChange={(e) => setSelectedManager({ ...selectedManager, password: e.target.value.length > 0 ? e.target.value : undefined })}
             />
 

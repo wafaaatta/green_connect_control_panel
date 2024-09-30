@@ -42,7 +42,7 @@ const ArticleCategoriesPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
         <Breadcrumb items={breadcrumbItems} />
         <div className="flex flex-wrap items-center gap-2">
-          <Button color="blue" leftIcon={Plus} size="sm" onClick={() => setIsAddModalOpen(true)}>
+          <Button color="blue" leftIcon={Plus as IconType} size="sm" onClick={() => setIsAddModalOpen(true)}>
             New Category
           </Button>
         </div>
@@ -130,8 +130,8 @@ const ArticleCategoriesPage: React.FC = () => {
               columns={[
                 { id: 'id', title: 'ID', key: 'id', flex: 1, align: 'left' },
                 { id: 'name', title: 'Name', key: 'name', flex: 1, align: 'left' },
-                { id: 'created_at', title: 'Created At', key: 'created_at', flex: 1, align: 'left', render(value, row) {
-                  return moment(value).format('YYYY-MM-DD HH:mm:ss')
+                { id: 'created_at', title: 'Created At', key: 'created_at', flex: 1, align: 'left', render(_, row) {
+                  return moment(row.created_at).format('YYYY-MM-DD HH:mm:ss')
                 }, },
               ]}
               data={categories}
@@ -193,7 +193,7 @@ const ArticleCategoriesPage: React.FC = () => {
                 <Button variant='outline' color='gray' onClick={() => setIsEditModalOpen(false)}>
                   Cancel
                 </Button>
-                <Button color="blue" onClick={handleEdit} leftIcon={Save}>
+                <Button color="blue" onClick={handleEdit} leftIcon={Save as IconType}>
                   Save Changes
                 </Button>
               </div>
