@@ -19,13 +19,16 @@ import { getFileUrl } from '../utils/laravel_storage'
 import ImageControl from '../components/ImageControl'
 import Article from '../interfaces/Article'
 import { IconType } from 'react-icons'
-
-const breadcrumbItems = [
-  { label: 'Dashboard', href: '/' },
-  { label: 'Article', href: '/articles' },
-]
+import { useTranslation } from 'react-i18next'
 
 const ArticlesPage: React.FC = () => {
+  const { t } = useTranslation()
+
+  const breadcrumbItems = [
+    { label: t('articlesPage.dashboard'), href: '/' },
+    { label: t('articlesPage.article'), href: '/articles' },
+  ]
+
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
@@ -50,7 +53,7 @@ const ArticlesPage: React.FC = () => {
         <Breadcrumb items={breadcrumbItems} />
         <div className="flex flex-wrap items-center gap-2">
           <Button color="blue" leftIcon={Plus as IconType} size="sm" onClick={() => setIsAddModalOpen(true)}>
-            New Article
+            {t('articlesPage.newArticle')}
           </Button>
         </div>
       </div>
@@ -69,7 +72,7 @@ const ArticlesPage: React.FC = () => {
       dispatch(
         showNotification({
           type: 'info',
-          message: 'Article created successfully',
+          message: t('articlesPage.articleCreatedSuccess'),
         })
       )
       resetForm()
@@ -79,7 +82,7 @@ const ArticlesPage: React.FC = () => {
       dispatch(
         showNotification({
           type: 'error',
-          message: 'Failed to create article',
+          message: t('articlesPage.articleCreatedFail'),
           description: (error as Error).message,
         })
       )
@@ -102,7 +105,7 @@ const ArticlesPage: React.FC = () => {
       dispatch(
         showNotification({
           type: 'info',
-          message: 'Article updated successfully',
+          message: t('articlesPage.articleUpdatedSuccess'),
         })
       )
       resetForm()
@@ -112,7 +115,7 @@ const ArticlesPage: React.FC = () => {
       dispatch(
         showNotification({
           type: 'error',
-          message: 'Failed to update article',
+          message: t('articlesPage.articleUpdatedFail'),
           description: (error as Error).message,
         })
       )
@@ -140,7 +143,7 @@ const ArticlesPage: React.FC = () => {
       dispatch(
         showNotification({
           type: 'info',
-          message: 'Article deleted successfully',
+          message: t('articlesPage.articleDeletedSuccess'),
         })
       )
       setIsDeleteModalOpen(false)
@@ -149,7 +152,7 @@ const ArticlesPage: React.FC = () => {
       dispatch(
         showNotification({
           type: 'error',
-          message: 'Failed to delete article',
+          message: t('articlesPage.articleDeletedFail'),
           description: (error as Error).message,
         })
       )
@@ -167,29 +170,29 @@ const ArticlesPage: React.FC = () => {
   return (
     <div className="bg-gray-100 min-h-screen">
       <ActionBar />
-      <Card title='Articles'>
+      <Card title={t('articlesPage.articles')}>
         <DataTable 
           hoverable
           striped
           showColumnSelector
           paginated
-          emptyMessage='No articles found'
+          emptyMessage={t('articlesPage.noArticlesFound')}
           loading={loading}
           columns={[
-            { title: 'ID', key: 'id', id: 'id' },
-            { title: 'Title', key: 'title', id: 'title' },
-            { title: 'Content', key: 'content', id: 'content',align: 'left', render(_, row) {
+            { title: t('articlesPage.id'), key: 'id', id: 'id' },
+            { title: t('articlesPage.title'), key: 'title', id: 'title' },
+            { title: t('articlesPage.content'), key: 'content', id: 'content', align: 'left', render(_, row) {
               return (
                 <div className="max-w-sm break-words leading-relaxed text-wrap">
                   {row.content}
                 </div>
               )
             }, },
-            { title: 'Category', key: ['article_category', 'name'], id: 'category' },
-            { title: 'Image', key: 'image', id: 'image' , render(_, row) {
+            { title: t('articlesPage.category'), key: ['article_category', 'name'], id: 'category' },
+            { title: t('articlesPage.image'), key: 'image', id: 'image' , render(_, row) {
               return (
                 <div className="w-20 h-20">
-                  <ImageControl src={getFileUrl(row.image)} alt="image" />
+                  <ImageControl src={getFileUrl(row.image)} alt={t('articlesPage.imageAlt')} />
                 </div>
               )
             },},
@@ -199,12 +202,12 @@ const ArticlesPage: React.FC = () => {
             <div className="flex gap-2">
               <IconTextButton 
                 icon={Edit as IconType}
-                text='Edit'
+                text={t('articlesPage.edit')}
                 onClick={() => openEditModal(row)}
               />
               <IconTextButton 
                 icon={Trash as IconType}
-                text='Delete'
+                text={t('articlesPage.delete')}
                 color='red'
                 onClick={() => openDeleteModal(row)}
               />
@@ -217,10 +220,10 @@ const ArticlesPage: React.FC = () => {
         setIsAddModalOpen(false)
         setIsEditModalOpen(false)
         resetForm()
-      }} title={isEditModalOpen ? 'Edit Article' : 'Add Article'}>
+      }} title={isEditModalOpen ? t('articlesPage.editArticle') : t('articlesPage.addArticle')}>
         <Input 
-          label='Title'
-          placeholder='Title'
+          label={t('articlesPage.title')}
+          placeholder={t('articlesPage.titlePlaceholder')}
           required
           icon={Text as IconType}
           value={title}
@@ -228,8 +231,8 @@ const ArticlesPage: React.FC = () => {
         />
 
         <TextArea 
-          label='Content'
-          placeholder='Content'
+          label={t('articlesPage.content')}
+          placeholder={t('articlesPage.contentPlaceholder')}
           rows={5}
           required
           icon={Text as IconType}
@@ -238,8 +241,8 @@ const ArticlesPage: React.FC = () => {
         />
 
         <Select 
-          label='Category'
-          placeholder='Category'
+          label={t('articlesPage.category')}
+          placeholder={t('articlesPage.categoryPlaceholder')}
           icon={FolderTree as IconType}
           options={categories.map(cat => ({
             label: cat.name,
@@ -262,10 +265,10 @@ const ArticlesPage: React.FC = () => {
             setIsEditModalOpen(false)
             resetForm()
           }}>
-            Cancel
+            {t('articlesPage.cancel')}
           </Button>
           <Button color="blue" onClick={isEditModalOpen ? handleEdit : handleAdd}>
-            {isEditModalOpen ? 'Update' : 'Create'}
+            {isEditModalOpen ? t('articlesPage.update') : t('articlesPage.create')}
           </Button>
         </div>
       </Modal>
@@ -273,8 +276,8 @@ const ArticlesPage: React.FC = () => {
       <DangerModal 
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
-        title='Delete Article'
-        content='Are you sure you want to delete this article?'
+        title={t('articlesPage.deleteArticle')}
+        content={t('articlesPage.deleteConfirmation')}
         onAccept={handleDelete}
         onCancel={() => setIsDeleteModalOpen(false)}
       />

@@ -8,12 +8,14 @@ import { useAppDispatch, useAppSelector } from '../hooks/hooks'
 import { useEffect } from 'react'
 import { getAllUsers } from '../redux/stores/user_store'
 import { IconType } from 'react-icons'
-
+import { useTranslation } from 'react-i18next'
 
 const UsersPage = () => {
+  const { t } = useTranslation()
+
   const breadcrumbItems = [
-    { label: 'Dashboard', href: '/' },
-    { label: 'Users', href: '/users' },
+    { label: t('usersPage.dashboard'), href: '/' },
+    { label: t('usersPage.users'), href: '/users' },
   ];
 
   const dispatch = useAppDispatch();
@@ -30,7 +32,7 @@ const UsersPage = () => {
         <Breadcrumb items={breadcrumbItems} />
         <div className="flex flex-wrap items-center gap-2">
           <Button color="blue" leftIcon={RefreshCcw as IconType} size="sm" onClick={() => {}}>
-            Refresh Data
+            {t('usersPage.refreshData')}
           </Button>
         </div>
       </div>
@@ -41,27 +43,28 @@ const UsersPage = () => {
     <div className="bg-gray-100 min-h-screen">
       <ActionBar />
       <Card
-        title="Users"
+        title={t('usersPage.users')}
       >
         <DataTable 
           hoverable
           paginated
           striped
           showColumnSelector
-          emptyMessage='No events found'
+          emptyMessage={t('usersPage.noUsersFound')}
           itemsPerPage={8}
           data={users}
           loading={loading}
           columns={[
-            { id: 'id', key: 'id', title: 'ID' },
-            { id: 'name', key: 'name', title: 'Name' },
-            { id: 'email', key: 'email', title: 'Email' },
+            { id: 'id', key: 'id', title: t('usersPage.id') },
+            { id: 'name', key: 'name', title: t('usersPage.name') },
+            { id: 'email', key: 'email', title: t('usersPage.email') },
           ]}
           actions={() => (
             <>
               <IconTextButton
                 icon={Trash as IconType}
                 color="red"
+                text={t('usersPage.delete')}
               />
             </>
           )}

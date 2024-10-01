@@ -11,8 +11,9 @@ import EventsPage from "./views/Events";
 import ManagersPage from "./views/Managers";
 import AdminLoginPage from "./views/Login";
 import ManageAuthorizations from "./views/ManageAuthorizations";
-import RequireAuth from "./components/RequireAuth";
+//import RequireAuth from "./components/RequireAuth";
 import ContactSubmissions from "./views/ContactSubmissions";
+import RequireAuth from "./components/RequireAuth";
 
 const router = createBrowserRouter([
     {

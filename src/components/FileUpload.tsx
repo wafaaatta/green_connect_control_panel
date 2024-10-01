@@ -1,6 +1,7 @@
 import React, { useState, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FiUpload, FiFile, FiImage, FiFilm, FiMusic } from 'react-icons/fi'
+import { useTranslation } from 'react-i18next'
 
 interface FileUploadProps {
   onFileSelect: (files: File[]) => void
@@ -17,6 +18,7 @@ function FileUpload({
   maxFiles = 5,
   mode = 'multi'
 }: FileUploadProps) {
+  const { t } = useTranslation()
   const [dragActive, setDragActive] = useState(false)
   const [files, setFiles] = useState<File[]>([])
   const [error, setError] = useState<string | null>(null)
@@ -54,11 +56,11 @@ function FileUpload({
     setError(null)
     const validFiles = newFiles.filter(file => {
       if (!file.type.match(acceptedFileTypes)) {
-        setError('One or more files are not of accepted type')
+        setError(t('fileUpload.errorFileType'))
         return false
       }
       if (file.size > maxFileSize) {
-        setError(`One or more files exceed ${maxFileSize / 1024 / 1024}MB`)
+        setError(t('fileUpload.errorFileSize', { size: maxFileSize / 1024 / 1024 }))
         return false
       }
       return true
@@ -70,7 +72,7 @@ function FileUpload({
     } else {
       const totalFiles = files.length + validFiles.length
       if (totalFiles > maxFiles) {
-        setError(`You can only upload a maximum of ${maxFiles} files`)
+        setError(t('fileUpload.errorMaxFiles', { max: maxFiles }))
         const allowedNewFiles = validFiles.slice(0, maxFiles - files.length)
         setFiles(prevFiles => [...prevFiles, ...allowedNewFiles])
         onFileSelect([...files, ...allowedNewFiles])
@@ -79,7 +81,7 @@ function FileUpload({
         onFileSelect([...files, ...validFiles])
       }
     }
-  }, [files, mode, maxFiles, acceptedFileTypes, maxFileSize, onFileSelect])
+  }, [files, mode, maxFiles, acceptedFileTypes, maxFileSize, onFileSelect, t])
 
   const removeFile = useCallback((index: number) => {
     const newFiles = files.filter((_, i) => i !== index)
@@ -134,15 +136,17 @@ function FileUpload({
               <FiUpload className="mx-auto w-12 h-12 text-gray-400" />
             </motion.div>
             <p className="mt-2 text-sm text-gray-600">
-              Drag and drop your file{mode === 'multi' ? 's' : ''} here, or{' '}
-              <span className="text-primary font-medium">browse</span>
+              {t('fileUpload.dragDropText', { context: mode })} {' '}
+              <span className="text-primary font-medium">{t('fileUpload.browse')}</span>
             </p>
             <p className="mt-1 text-xs text-gray-500">
-              {acceptedFileTypes !== '*' ? `Accepted file types: ${acceptedFileTypes}` : 'All file types accepted'}
+              {acceptedFileTypes !== '*' 
+                ? t('fileUpload.acceptedTypes', { types: acceptedFileTypes }) 
+                : t('fileUpload.allTypesAccepted')}
             </p>
             <p className="mt-1 text-xs text-gray-500">
-              Max file size: {maxFileSize / 1024 / 1024}MB
-              {mode === 'multi' && ` | Max files: ${maxFiles}`}
+              {t('fileUpload.maxFileSize', { size: maxFileSize / 1024 / 1024 })}
+              {mode === 'multi' && t('fileUpload.maxFiles', { max: maxFiles })}
             </p>
           </div>
         ) : (
@@ -179,9 +183,9 @@ function FileUpload({
                       type="button"
                       className="text-white p-2 rounded text-lg transition-colors duration-200"
                       onClick={() => removeFile(index)}
-                      aria-label="Remove file"
+                      aria-label={t('fileUpload.removeFile')}
                     >
-                      remove
+                      {t('fileUpload.remove')}
                     </button>
                   </motion.div>
                   <p className="mt-1 text-xs text-gray-500 truncate">{file.name}</p>
@@ -200,7 +204,7 @@ function FileUpload({
                   onClick={() => inputRef.current?.click()}
                 >
                   <FiUpload className="w-8 h-8 mb-2" />
-                  <span className="text-sm">Add More</span>
+                  <span className="text-sm">{t('fileUpload.addMore')}</span>
                 </button>
               </motion.div>
             )}
@@ -225,14 +229,14 @@ function FileUpload({
           className="mt-4 flex justify-between items-center"
         >
           <p className="text-sm text-gray-600">
-            {files.length} file{files.length !== 1 ? 's' : ''} selected
+            {t('fileUpload.filesSelected', { count: files.length })}
           </p>
           <button
             type="button"
             className="text-red-500 hover:text-red-700 transition-colors duration-200 text-sm font-medium"
             onClick={clearAllFiles}
           >
-            Clear {mode === 'single' ? 'file' : 'all'}
+            {t('fileUpload.clearFiles', { context: mode })}
           </button>
         </motion.div>
       )}

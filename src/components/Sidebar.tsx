@@ -16,6 +16,7 @@ import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import AppRoutes from '../constants/app_routes';
 import { RiFilePaper2Line } from 'react-icons/ri';
 import { MdCampaign } from 'react-icons/md';
+import { useTranslation } from 'react-i18next';
 
 interface SubMenuItem {
   title: string;
@@ -38,6 +39,7 @@ const MenuItem: React.FC<MenuItem & { isCollapsed: boolean }> = ({ icon, title, 
   const navigate = useNavigate();
   const location = useLocation();
   const menuRef = useRef<HTMLDivElement>(null);
+  const { t } = useTranslation();
 
   const isActive = path ? location.pathname === path : subItems?.some(item => location.pathname === item.path);
 
@@ -85,7 +87,7 @@ const MenuItem: React.FC<MenuItem & { isCollapsed: boolean }> = ({ icon, title, 
         </div>
         {!isCollapsed && (
           <>
-            <span className="ml-1 text-sm">{title}</span>
+            <span className="ml-1 text-sm">{t(title)}</span>
             {subItems && (
               <ChevronDown
                 className={`w-4 h-4 ml-auto transition-transform duration-200 mr-2 ${
@@ -117,7 +119,7 @@ const MenuItem: React.FC<MenuItem & { isCollapsed: boolean }> = ({ icon, title, 
                               {
                 isCollapsed && (
                   <>
-                    <p className="px-4 py-1.5 text-sm text-blue-400 text-center">{title}</p>
+                    <p className="px-4 py-1.5 text-sm text-blue-400 text-center">{t(title)}</p>
                     <hr className="border-gray-700" />
                   </>
                 )
@@ -147,7 +149,7 @@ const MenuItem: React.FC<MenuItem & { isCollapsed: boolean }> = ({ icon, title, 
                               {
                 isCollapsed && (
                   <>
-                    <p className="px-4 py-1.5 text-sm text-blue-400 text-center">{title}</p>
+                    <p className="px-4 py-1.5 text-sm text-blue-400 text-center">{t(title)}</p>
                     <hr className="border-gray-700" />
                   </>
                 )
@@ -159,7 +161,7 @@ const MenuItem: React.FC<MenuItem & { isCollapsed: boolean }> = ({ icon, title, 
                     <div className={`${isCollapsed ? '' : 'pl-2'}`}>
                       <div className="flex items-center">
                         <span className="mr-2">{item.icon ?? '-'}</span>
-                        <span>{item.title}</span>
+                        <span>{t(item.title)}</span>
                       </div>
                       {item.count !== undefined && (
                         <span className={`px-2 py-1 text-xs text-white rounded-full ${item.color || 'bg-blue-500'}`}>
@@ -178,51 +180,45 @@ const MenuItem: React.FC<MenuItem & { isCollapsed: boolean }> = ({ icon, title, 
   );
 };
 
-const menuItems: MenuItem[] = [
-  { icon: <Home size={20} />, title: "Dashboard", path: "/" },
-  { icon: <MdCampaign size={20} />, title: "Events", path: AppRoutes.EVENTS },
-  { icon: <RiFilePaper2Line size={20} />, title: "Announces", path: AppRoutes.ANNOUNCES },
-  { icon: <User size={20} />, title: "Users", path: AppRoutes.USERS },
-  { icon: <Layout size={20} />, title: "All Managers", path: AppRoutes.MANAGERS },
-  { icon: <Mail size={20} />, title: "Contact Submissions", path: AppRoutes.CONTACT_SUBMISSIONS },
-  {
-    icon: <File size={20}/>, title: 'Article Management',
-    subItems: [
-      {
-        title: 'All Articles',
-        path: AppRoutes.ARTICLES,
-        icon: <FolderTree size={20}/>
-      },
-      {
-        title: 'Article Categories',
-        path: AppRoutes.ARTICLE_CATEGORIES,
-        icon: <Package size={20}/>
-      },
-    ]
-  },
-];
-
-
 const Sidebar: React.FC = () => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+  const { t } = useTranslation();
 
-  console.log(isMobile);
-  
+  const menuItems: MenuItem[] = [
+    { icon: <Home size={20} />, title: "sidebar.dashboard", path: "/" },
+    { icon: <MdCampaign size={20} />, title: "sidebar.events", path: AppRoutes.EVENTS },
+    { icon: <RiFilePaper2Line size={20} />, title: "sidebar.announces", path: AppRoutes.ANNOUNCES },
+    { icon: <User size={20} />, title: "sidebar.users", path: AppRoutes.USERS },
+    { icon: <Layout size={20} />, title: "sidebar.allManagers", path: AppRoutes.MANAGERS },
+    { icon: <Mail size={20} />, title: "sidebar.contactSubmissions", path: AppRoutes.CONTACT_SUBMISSIONS },
+    {
+      icon: <File size={20}/>, title: 'sidebar.articleManagement',
+      subItems: [
+        {
+          title: 'sidebar.allArticles',
+          path: AppRoutes.ARTICLES,
+          icon: <FolderTree size={20}/>
+        },
+        {
+          title: 'sidebar.articleCategories',
+          path: AppRoutes.ARTICLE_CATEGORIES,
+          icon: <Package size={20}/>
+        },
+      ]
+    },
+  ];
 
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 1024);
       setIsCollapsed(true);
-      // setIsCollapsed(window.innerWidth < 1024);
     };
 
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-
-
 
   return (
     <motion.div
@@ -232,10 +228,11 @@ const Sidebar: React.FC = () => {
       className="bg-gray-800 text-white h-full overflow-hidden flex flex-col"
     >
       <div className='flex items-center justify-between p-4 border-b border-gray-700'>
-        {!isCollapsed && <span className="text-xl font-semibold">Green Connect</span>}
+        {!isCollapsed && <span className="text-xl font-semibold">{t('sidebar.greenConnect')}</span>}
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
           className="p-1 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600"
+          aria-label={t('sidebar.toggleSidebar')}
         >
           <Menu size={24} />
         </button>
@@ -256,7 +253,7 @@ const Sidebar: React.FC = () => {
         ): (
           <div className='px-2 py-1.5 text-red-600 rounded mx-2 mb-3 flex items-center hover:bg-gray-700 cursor-pointer'>
             <LogOut size={20} className='mr-2'/>
-            <p>Logout</p>
+            <p>{t('sidebar.logout')}</p>
           </div>
         )
       }

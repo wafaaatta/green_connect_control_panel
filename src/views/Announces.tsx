@@ -16,8 +16,10 @@ import { showNotification } from '../redux/stores/notification_store'
 import { unwrapResult } from '@reduxjs/toolkit'
 import Announce from '../interfaces/Announce'
 import { IconType } from 'react-icons'
+import { useTranslation } from 'react-i18next'
 
 const AnnouncesPage = () => {
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { announces, loading } = useAppSelector((state) => state.announce_store)
   const [filteredAnnounces, setFilteredAnnounces] = useState<Announce[]>(announces)
@@ -56,13 +58,13 @@ const AnnouncesPage = () => {
   const mapStatusToTag = (status: string) => {
     switch (status) {
       case 'pending':
-        return <span className="inline-block bg-yellow-100 rounded px-2 py-1 text-sm font-semibold text-yellow-700 mr-2">Pending</span>
+        return <span className="inline-block bg-yellow-100 rounded px-2 py-1 text-sm font-semibold text-yellow-700 mr-2">{t('announcesPage.statusPending')}</span>
       case 'accepted':
-        return <span className="inline-block bg-green-100 rounded px-2 py-1 text-sm font-semibold text-green-700 mr-2">Accepted</span>
+        return <span className="inline-block bg-green-100 rounded px-2 py-1 text-sm font-semibold text-green-700 mr-2">{t('announcesPage.statusAccepted')}</span>
       case 'rejected':
-        return <span className="inline-block bg-red-100 rounded px-2 py-1 text-sm font-semibold text-red-700 mr-2">Rejected</span>
+        return <span className="inline-block bg-red-100 rounded px-2 py-1 text-sm font-semibold text-red-700 mr-2">{t('announcesPage.statusRejected')}</span>
       default:
-        return <span className="inline-block bg-gray-100 rounded px-2 py-1 text-sm font-semibold text-gray-700 mr-2">Unknown</span>
+        return <span className="inline-block bg-gray-100 rounded px-2 py-1 text-sm font-semibold text-gray-700 mr-2">{t('announcesPage.statusUnknown')}</span>
     }
   }
 
@@ -87,11 +89,11 @@ const AnnouncesPage = () => {
         acceptAnnounce(selectedAnnounce.id)
       ).then(unwrapResult)
       .then(() => {
-        dispatch(showNotification({ type: 'info', message: 'Announce accepted successfully' }))
+        dispatch(showNotification({ type: 'info', message: t('announcesPage.announceAcceptedSuccess') }))
         setIsAcceptModalOpen(false)
         setSelectedAnnounce(null)
       }).catch(err => {
-        dispatch(showNotification({ type: 'error', message: 'Failed to accept announce', description: (err as Error).message }))
+        dispatch(showNotification({ type: 'error', message: t('announcesPage.announceAcceptedFail'), description: (err as Error).message }))
       })
     }
   }
@@ -102,23 +104,22 @@ const AnnouncesPage = () => {
         rejectAnnounce(selectedAnnounce.id)
       ).then(unwrapResult)
       .then(() => {
-        dispatch(showNotification({ type: 'info', message: 'Announce rejected successfully' }))
+        dispatch(showNotification({ type: 'info', message: t('announcesPage.announceRejectedSuccess') }))
         setIsRejectModalOpen(false)
         setSelectedAnnounce(null)
       }).catch(err => {
-        dispatch(showNotification({ type: 'error', message: 'Failed to reject announce', description: (err as Error).message }))
+        dispatch(showNotification({ type: 'error', message: t('announcesPage.announceRejectedFail'), description: (err as Error).message }))
       })
     }
   }
 
   const breadcrumbItems = [
-    { label: 'Dashboard', href: '/' },
-    { label: 'Announces', href: '/announces' },
+    { label: t('announcesPage.dashboard'), href: '/' },
+    { label: t('announcesPage.announces'), href: '/announces' },
   ]
 
   const ActionBar: React.FC = () => (
     <motion.div
-    
       className="bg-white shadow rounded px-4 py-3 mb-4"
     >
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
@@ -129,7 +130,7 @@ const AnnouncesPage = () => {
               onClick={() => setIsFilterOpen(!isFilterOpen)}
               className="flex items-center gap-2 px-4 py-1.5 bg-white border border-gray-300 rounded shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
-              {statusFilter === 'all' ? 'All Statuses' : statusFilter.charAt(0).toUpperCase() + statusFilter.slice(1)}
+              {statusFilter === 'all' ? t('announcesPage.allStatuses') : t(`announcesPage.status${statusFilter.charAt(0).toUpperCase() + statusFilter.slice(1)}`)}
               <ChevronDown className="h-4 w-4" />
             </button>
             <AnimatePresence>
@@ -149,7 +150,7 @@ const AnnouncesPage = () => {
                         className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                         role="menuitem"
                       >
-                        {status === 'all' ? 'All Statuses' : status.charAt(0).toUpperCase() + status.slice(1)}
+                        {status === 'all' ? t('announcesPage.allStatuses') : t(`announcesPage.status${status.charAt(0).toUpperCase() + status.slice(1)}`)}
                       </button>
                     ))}
                   </div>
@@ -158,7 +159,7 @@ const AnnouncesPage = () => {
             </AnimatePresence>
           </div>
           <Button color="blue" leftIcon={RefreshCcw as IconType} size="sm" onClick={() => dispatch(getAllAnnounces())}>
-            Refresh Data
+            {t('announcesPage.refreshData')}
           </Button>
         </div>
       </div>
@@ -173,35 +174,35 @@ const AnnouncesPage = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <Card title='Announcements'>
+        <Card title={t('announcesPage.announcements')}>
           <DataTable 
             striped
             hoverable
             loading={loading}
-            emptyMessage='No data available'
+            emptyMessage={t('announcesPage.noDataAvailable')}
             paginated
             data={filteredAnnounces}
             showColumnSelector
             columns={[
-              { id: 'title', title: 'Title', key: 'title' },
-              { id: 'description', title: 'Description' , key: 'description', render(_, row) {
+              { id: 'title', title: t('announcesPage.title'), key: 'title' },
+              { id: 'description', title: t('announcesPage.description'), key: 'description', render(_, row) {
                 return (
                   <div className="max-w-sm text-wrap">{row.description}</div>
                 )
               },},
-              { id: 'country', title: 'Country', key: 'country' },
-              { id: 'city', title: 'City', key: 'city' },
-              { id: 'postal_code', title: 'Postal Code', key: 'postal_code' },
-              { id: 'request_type', title: 'Request Type', key: 'request_type', render(_, row) {
+              { id: 'country', title: t('announcesPage.country'), key: 'country' },
+              { id: 'city', title: t('announcesPage.city'), key: 'city' },
+              { id: 'postal_code', title: t('announcesPage.postalCode'), key: 'postal_code' },
+              { id: 'request_type', title: t('announcesPage.requestType'), key: 'request_type', render(_, row) {
                 return (
                   <div
                     className="flex items-center justify-center bg-blue-100 text-blue-700 px-2 py-1 rounded text-sm font-semibold"
                   >
-                    {row.request_type === null ? 'Nothing' : row.request_type === 'creation' ? 'Creation' : 'Modification'}
+                    {row.request_type === null ? t('announcesPage.nothing') : row.request_type === 'creation' ? t('announcesPage.creation') : t('announcesPage.modification')}
                   </div>
                 )
               }, },
-              { id: 'status', title: 'Status', key: 'status', render(_, row) {
+              { id: 'status', title: t('announcesPage.status'), key: 'status', render(_, row) {
                 return mapStatusToTag(row.status)
               }, },
             ]}
@@ -210,12 +211,12 @@ const AnnouncesPage = () => {
                 <div className="flex flex-wrap items-center gap-2">
                   <IconTextButton 
                     icon={Check as IconType}
-                    text='Accept'
+                    text={t('announcesPage.accept')}
                     onClick={() => handleAccept(row)}
                   />
                   <IconTextButton 
                     icon={Trash2 as IconType}
-                    text='Reject'
+                    text={t('announcesPage.reject')}
                     color='red' 
                     onClick={() => handleReject(row)}
                   />
@@ -229,20 +230,20 @@ const AnnouncesPage = () => {
       <Modal
         isOpen={isAcceptModalOpen}
         onClose={() => setIsAcceptModalOpen(false)}
-        title="Accept Announcement"
+        title={t('announcesPage.acceptAnnouncement')}
       >
-        <p className="mb-4">Are you sure you want to accept this announcement?</p>
+        <p className="mb-4">{t('announcesPage.acceptConfirmation')}</p>
         <div className="flex justify-end space-x-2">
-          <Button color="gray" onClick={() => setIsAcceptModalOpen(false)}>Cancel</Button>
-          <Button color="green" onClick={confirmAccept}>Accept</Button>
+          <Button color="gray" onClick={() => setIsAcceptModalOpen(false)}>{t('announcesPage.cancel')}</Button>
+          <Button color="green" onClick={confirmAccept}>{t('announcesPage.accept')}</Button>
         </div>
       </Modal>
 
       <DangerModal
         isOpen={isRejectModalOpen}
         onClose={() => setIsRejectModalOpen(false)}
-        title="Reject Announcement"
-        content="Are you sure you want to reject this announcement? This action cannot be undone."
+        title={t('announcesPage.rejectAnnouncement')}
+        content={t('announcesPage.rejectConfirmation')}
         onAccept={confirmReject}
         onCancel={() => setIsRejectModalOpen(false)}
       />

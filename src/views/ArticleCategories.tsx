@@ -15,8 +15,10 @@ import ArticleCategory from '../interfaces/ArticleCategory'
 import { DangerModal } from '../components/DangerModal'
 import IconTextButton from '../components/IconTextButton'
 import moment from 'moment'
+import { useTranslation } from 'react-i18next'
 
 const ArticleCategoriesPage: React.FC = () => {
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { categories } = useAppSelector(state => state.article_category_store)
   const [name, setName] = useState('')
@@ -31,8 +33,8 @@ const ArticleCategoriesPage: React.FC = () => {
   }, [dispatch])
 
   const breadcrumbItems = [
-    { label: 'Dashboard', href: '/' },
-    { label: 'Article Categories', href: '/article-categories' },
+    { label: t('articleCategories.dashboard'), href: '/' },
+    { label: t('articleCategories.articleCategories'), href: '/article-categories' },
   ]
 
   const ActionBar: React.FC = () => (
@@ -43,7 +45,7 @@ const ArticleCategoriesPage: React.FC = () => {
         <Breadcrumb items={breadcrumbItems} />
         <div className="flex flex-wrap items-center gap-2">
           <Button color="blue" leftIcon={Plus as IconType} size="sm" onClick={() => setIsAddModalOpen(true)}>
-            New Category
+            {t('articleCategories.newCategory')}
           </Button>
         </div>
       </div>
@@ -53,14 +55,14 @@ const ArticleCategoriesPage: React.FC = () => {
   const handleAdd = async () => {
     try {
       await dispatch(createCategory(name))
-      dispatch(showNotification({ type: 'info', message: 'Category added successfully' }))
+      dispatch(showNotification({ type: 'info', message: t('articleCategories.categoryAddedSuccess') }))
       setIsAddModalOpen(false)
       setName('')
     } catch (error) {
       console.log(error)
       dispatch(showNotification({
         type: 'error',
-        message: 'Failed to add category',
+        message: t('articleCategories.categoryAddedFail'),
         description: (error as Error).message,
       }))
     }
@@ -70,7 +72,7 @@ const ArticleCategoriesPage: React.FC = () => {
     if (!selectedCategory) return
     try {
       await dispatch(updateCategory({ id: selectedCategory.id, name: editName }))
-      dispatch(showNotification({ type: 'info', message: 'Category updated successfully' }))
+      dispatch(showNotification({ type: 'info', message: t('articleCategories.categoryUpdatedSuccess') }))
       setIsEditModalOpen(false)
       setSelectedCategory(null)
       setEditName('') 
@@ -78,7 +80,7 @@ const ArticleCategoriesPage: React.FC = () => {
       console.log(error)
       dispatch(showNotification({
         type: 'error',
-        message: 'Failed to update category',
+        message: t('articleCategories.categoryUpdatedFail'),
         description: (error as Error).message,
       }))
     }
@@ -99,14 +101,14 @@ const ArticleCategoriesPage: React.FC = () => {
     if (!selectedCategory) return
     try {
       await dispatch(deleteCategory(selectedCategory.id))
-      dispatch(showNotification({ type: 'info', message: 'Category deleted successfully' }))
+      dispatch(showNotification({ type: 'info', message: t('articleCategories.categoryDeletedSuccess') }))
       setIsDeleteModalOpen(false)
       setSelectedCategory(null)
     } catch (error) {
       console.log(error)
       dispatch(showNotification({
         type: 'error',
-        message: 'Failed to delete category',
+        message: t('articleCategories.categoryDeletedFail'),
         description: (error as Error).message,
       }))
     }
@@ -128,9 +130,9 @@ const ArticleCategoriesPage: React.FC = () => {
               striped
               showColumnSelector
               columns={[
-                { id: 'id', title: 'ID', key: 'id', flex: 1, align: 'left' },
-                { id: 'name', title: 'Name', key: 'name', flex: 1, align: 'left' },
-                { id: 'created_at', title: 'Created At', key: 'created_at', flex: 1, align: 'left', render(_, row) {
+                { id: 'id', title: t('articleCategories.id'), key: 'id', flex: 1, align: 'left' },
+                { id: 'name', title: t('articleCategories.name'), key: 'name', flex: 1, align: 'left' },
+                { id: 'created_at', title: t('articleCategories.createdAt'), key: 'created_at', flex: 1, align: 'left', render(_, row) {
                   return moment(row.created_at).format('YYYY-MM-DD HH:mm:ss')
                 }, },
               ]}
@@ -140,13 +142,13 @@ const ArticleCategoriesPage: React.FC = () => {
                   <IconTextButton 
                     icon={Edit as IconType}
                     onClick={() => openEditModal(row)}
-                    text='Edit'
+                    text={t('articleCategories.edit')}
                   />
                   <IconTextButton
                     icon={Trash as IconType}
                     color='red'
                     onClick={() => openDeleteModal(row)}
-                    text='Delete'
+                    text={t('articleCategories.delete')}
                   />
                 </div>
               )}
@@ -155,27 +157,27 @@ const ArticleCategoriesPage: React.FC = () => {
         </motion.div>
       </div>
 
-      <Modal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} title='Add Category'>
+      <Modal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} title={t('articleCategories.addCategory')}>
         <Input 
-          label='Name'
-          placeholder='Category Name'
+          label={t('articleCategories.name')}
+          placeholder={t('articleCategories.categoryNamePlaceholder')}
           icon={Package as IconType}
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
         <div className="flex justify-end space-x-2 mt-4">
           <Button variant='outline' color='gray' onClick={() => setIsAddModalOpen(false)}>
-            Cancel
+            {t('articleCategories.cancel')}
           </Button>
           <Button color="blue" onClick={handleAdd}>
-            Create
+            {t('articleCategories.create')}
           </Button>
         </div>
       </Modal>
 
       <AnimatePresence>
         {isEditModalOpen && (
-          <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} title='Edit Category'>
+          <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} title={t('articleCategories.editCategory')}>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -183,18 +185,18 @@ const ArticleCategoriesPage: React.FC = () => {
               transition={{ duration: 0.3 }}
             >
               <Input 
-                label='Name'
-                placeholder='Category Name'
+                label={t('articleCategories.name')}
+                placeholder={t('articleCategories.categoryNamePlaceholder')}
                 icon={Package as IconType}
                 value={editName}
                 onChange={(e) => setEditName(e.target.value)}
               />
               <div className="flex justify-end space-x-2 mt-4">
                 <Button variant='outline' color='gray' onClick={() => setIsEditModalOpen(false)}>
-                  Cancel
+                  {t('articleCategories.cancel')}
                 </Button>
                 <Button color="blue" onClick={handleEdit} leftIcon={Save as IconType}>
-                  Save Changes
+                  {t('articleCategories.saveChanges')}
                 </Button>
               </div>
             </motion.div>
@@ -205,8 +207,8 @@ const ArticleCategoriesPage: React.FC = () => {
       <DangerModal 
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
-        title='Delete Category'
-        content={`Are you sure you want to delete "${selectedCategory?.name}" category?`}
+        title={t('articleCategories.deleteCategory')}
+        content={t('articleCategories.deleteCategoryConfirmation', { name: selectedCategory?.name })}
         onAccept={handleDelete}
         onCancel={() => setIsDeleteModalOpen(false)}
       />

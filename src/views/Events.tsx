@@ -22,11 +22,14 @@ import { isEmptyArray } from '../utils/array_utils'
 import { unwrapResult } from '@reduxjs/toolkit'
 import { getFileUrl } from '../utils/laravel_storage'
 import { IconType } from 'react-icons'
+import { useTranslation } from 'react-i18next'
 
 const EventsPage: React.FC = () => {
+  const { t } = useTranslation()
+
   const breadcrumbItems = [
-    { label: 'Dashboard', href: '/' },
-    { label: 'Events', href: '/events' },
+    { label: t('eventsPage.dashboard'), href: '/' },
+    { label: t('eventsPage.events'), href: '/events' },
   ]
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
@@ -53,7 +56,7 @@ const EventsPage: React.FC = () => {
         <Breadcrumb items={breadcrumbItems} />
         <div className="flex flex-wrap items-center gap-2">
           <Button color="blue" leftIcon={Plus as IconType} size="sm" onClick={() => setIsAddModalOpen(true)}>
-            New Event
+            {t('eventsPage.newEvent')}
           </Button>
         </div>
       </div>
@@ -69,9 +72,9 @@ const EventsPage: React.FC = () => {
       <motion.div 
         className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4"
       >
-        <StatCard title="Total Events" value={totalEvents} icon={Calendar} />
-        <StatCard title="Upcoming Events" value={upcomingEvents} icon={Clock} />
-        <StatCard title="Expired Events" value={expiredEvents} icon={Users} />
+        <StatCard title={t('eventsPage.totalEvents')} value={totalEvents} icon={Calendar} />
+        <StatCard title={t('eventsPage.upcomingEvents')} value={upcomingEvents} icon={Clock} />
+        <StatCard title={t('eventsPage.expiredEvents')} value={expiredEvents} icon={Users} />
       </motion.div>
     )
   }
@@ -102,7 +105,7 @@ const EventsPage: React.FC = () => {
       dispatch(
         showNotification({
           type: 'info',
-          message: 'Event created successfully',
+          message: t('eventsPage.eventCreatedSuccess'),
         })
       )
       resetForm()
@@ -112,7 +115,7 @@ const EventsPage: React.FC = () => {
       dispatch(
         showNotification({
           type: 'error',
-          message: 'Failed to create event',
+          message: t('eventsPage.eventCreatedFail'),
           description: (error as Error).message,
         })
       )
@@ -120,20 +123,6 @@ const EventsPage: React.FC = () => {
   }
 
   const handleEdit = async () => {
-
-    console.log({
-      id: selectedEvent!.id,
-      data: {
-        title,
-        description,
-        organized_by: organizer,
-        location,
-        event_date: moment(selectedDate).format('YYYY-MM-DD HH:mm:ss'),
-        image,
-      }
-    });
-    
-
     const formData = new FormData()
 
     formData.append('title', title)
@@ -155,7 +144,7 @@ const EventsPage: React.FC = () => {
       dispatch(
         showNotification({
           type: 'info',
-          message: 'Event updated successfully',
+          message: t('eventsPage.eventUpdatedSuccess'),
         })
       )
       resetForm()
@@ -165,7 +154,7 @@ const EventsPage: React.FC = () => {
       dispatch(
         showNotification({
           type: 'error',
-          message: 'Failed to update event',
+          message: t('eventsPage.eventUpdatedFail'),
           description: (error as Error).message,
         })
       )
@@ -178,7 +167,7 @@ const EventsPage: React.FC = () => {
       dispatch(
         showNotification({
           type: 'info',
-          message: 'Event deleted successfully',
+          message: t('eventsPage.eventDeletedSuccess'),
         })
       )
       setIsDeleteModalOpen(false)
@@ -187,7 +176,7 @@ const EventsPage: React.FC = () => {
       dispatch(
         showNotification({
           type: 'error',
-          message: 'Failed to delete event',
+          message: t('eventsPage.eventDeletedFail'),
           description: (error as Error).message,
         })
       )
@@ -222,20 +211,20 @@ const EventsPage: React.FC = () => {
     <div className="bg-gray-100 min-h-screen">
       <ActionBar />
       <Statistics />
-      <Card title="Events Management">
+      <Card title={t('eventsPage.eventsManagement')}>
         <DataTable 
           hoverable
           paginated={!isEmptyArray(events)}
           striped
           showColumnSelector
-          emptyMessage='No events found'
+          emptyMessage={t('eventsPage.noEventsFound')}
           itemsPerPage={6}
           data={events}
           columns={[
             {
               id: 'image',
               key: 'image',
-              title: 'Image',
+              title: t('eventsPage.image'),
               sortable: false,
               render: (_, row) => (
                 <img
@@ -245,16 +234,16 @@ const EventsPage: React.FC = () => {
                 />
               ),
             },
-            { id: 'title', key: 'title', title: 'Title', sortable: true },
-            { id: 'description', key: 'description', title: 'Description', sortable: true, render(_, row) {
+            { id: 'title', key: 'title', title: t('eventsPage.title'), sortable: true },
+            { id: 'description', key: 'description', title: t('eventsPage.description'), sortable: true, render(_, row) {
               return <div className="text-wrap max-w-md">
                 {row.description}
               </div>
             }, },
-            { id: 'organized_by', key: 'organized_by', title: 'Organizer', sortable: true },
-            { id: 'organizer_email', key: 'organizer_email', title: 'Organizer Email', sortable: true },
-            { id: 'location', key: 'location', title: 'Location' },
-            { id: 'event_date', key: 'event_date', title: 'Event Date', sortable: true, render(_, row) {
+            { id: 'organized_by', key: 'organized_by', title: t('eventsPage.organizer'), sortable: true },
+            { id: 'organizer_email', key: 'organizer_email', title: t('eventsPage.organizerEmail'), sortable: true },
+            { id: 'location', key: 'location', title: t('eventsPage.location') },
+            { id: 'event_date', key: 'event_date', title: t('eventsPage.eventDate'), sortable: true, render(_, row) {
               return moment(row.event_date).format('YYYY-MM-DD HH:mm')
             }, }
           ]}
@@ -275,7 +264,7 @@ const EventsPage: React.FC = () => {
         />
       </Card>
 
-      <Modal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} title='Add Event'>
+      <Modal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} title={t('eventsPage.addEvent')}>
         <EventForm 
           title={title}
           setTitle={setTitle}
@@ -295,19 +284,19 @@ const EventsPage: React.FC = () => {
             variant="outline"
             onClick={() => setIsAddModalOpen(false)}
           >
-            Cancel
+            {t('eventsPage.cancel')}
           </Button>
           <Button
             color="blue"
             className="ml-2"
             onClick={handleAdd}
           >
-            Create
+            {t('eventsPage.create')}
           </Button>
         </div>
       </Modal>
 
-      <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} title='Edit Event'>
+      <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} title={t('eventsPage.editEvent')}>
         <EventForm 
           title={title}
           setTitle={setTitle}
@@ -327,14 +316,14 @@ const EventsPage: React.FC = () => {
             variant="outline"
             onClick={() => setIsEditModalOpen(false)}
           >
-            Cancel
+            {t('eventsPage.cancel')}
           </Button>
           <Button
             color="blue"
             className="ml-2"
             onClick={handleEdit}
           >
-            Save Changes
+            {t('eventsPage.saveChanges')}
           </Button>
         </div>
       </Modal>
@@ -342,8 +331,8 @@ const EventsPage: React.FC = () => {
       <DangerModal 
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
-        title="Delete Event"
-        content="Are you sure you want to delete this event?"
+        title={t('eventsPage.deleteEvent')}
+        content={t('eventsPage.deleteEventConfirmation')}
         onAccept={handleDelete}
         onCancel={() => setIsDeleteModalOpen(false)}
       />
@@ -377,55 +366,59 @@ const EventForm: React.FC<EventFormProps> = ({
   location,
   setLocation,
   setImage
-}) => (
-  <>
-    <Input
-      label="Title"
-      placeholder='Enter Title'
-      icon={Text as IconType}
-      value={title}
-      onChange={(e) => setTitle(e.target.value)}
-    />
-    <TextArea
-      label="Description"
-      placeholder='Enter Description'
-      icon={Text as IconType}
-      rows={4}
-      value={description}
-      onChange={(e) => setDescription(e.target.value)}
-    />
-    <div className="flex flex-col">
-      <p className='text-gray-500 text-sm'>Start Date</p>
-      <DatePicker 
-        showTimeSelect 
-        dateFormat={"dd.MM.yyyy HH:mm"} 
-        className='focus:outline-none cursor-pointer w-full border border-gray-300 p-2 rounded' 
-        wrapperClassName='w-full mb-4' 
-        placeholderText='Start Date' 
-        selected={selectedDate} 
-        onChange={(date: Date | null) => setSelectedDate(date)} 
+}) => {
+  const { t } = useTranslation()
+
+  return (
+    <>
+      <Input
+        label={t('eventsPage.title')}
+        placeholder={t('eventsPage.enterTitle')}
+        icon={Text as IconType}
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
       />
-    </div>
-    <Input
-      label="Organizer"
-      placeholder='Enter Organizer'
-      icon={Text as IconType}
-      value={organizer}
-      onChange={(e) => setOrganizer(e.target.value)}
-    />
-    <Input
-      label="Location"
-      placeholder='Enter Location'
-      icon={Text as IconType}
-      value={location}
-      onChange={(e) => setLocation(e.target.value)}
-    />
-    <FileUpload
-      onFileSelect={(files) => setImage(files[0])}
-      maxFiles={1}
-      mode='single'
-    />
-  </>
-)
+      <TextArea
+        label={t('eventsPage.description')}
+        placeholder={t('eventsPage.enterDescription')}
+        icon={Text as IconType}
+        rows={4}
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+      />
+      <div className="flex flex-col">
+        <p className='text-gray-500 text-sm'>{t('eventsPage.startDate')}</p>
+        <DatePicker 
+          showTimeSelect 
+          dateFormat={"dd.MM.yyyy HH:mm"} 
+          className='focus:outline-none cursor-pointer w-full border border-gray-300 p-2 rounded' 
+          wrapperClassName='w-full mb-4' 
+          placeholderText={t('eventsPage.startDate')} 
+          selected={selectedDate} 
+          onChange={(date: Date | null) => setSelectedDate(date)} 
+        />
+      </div>
+      <Input
+        label={t('eventsPage.organizer')}
+        placeholder={t('eventsPage.enterOrganizer')}
+        icon={Text as IconType}
+        value={organizer}
+        onChange={(e) => setOrganizer(e.target.value)}
+      />
+      <Input
+        label={t('eventsPage.location')}
+        placeholder={t('eventsPage.enterLocation')}
+        icon={Text as IconType}
+        value={location}
+        onChange={(e) => setLocation(e.target.value)}
+      />
+      <FileUpload
+        onFileSelect={(files) => setImage(files[0])}
+        maxFiles={1}
+        mode='single'
+      />
+    </>
+  )
+}
 
 export default EventsPage
