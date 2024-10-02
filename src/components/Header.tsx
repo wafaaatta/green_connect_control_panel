@@ -51,7 +51,7 @@ const Header = () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <Link to="/admin" className="flex-shrink-0">
-              <img className="h-16 w-auto" src="/src/assets/green_connect.png" alt={t('header.logoAlt')} />
+              <img className="h-16 w-auto" src="/assets/green_connect.png" alt={t('header.logoAlt')} />
             </Link>
           </div>
           <div className="flex items-center">

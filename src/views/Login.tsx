@@ -86,7 +86,7 @@ export default function GreenConnectAdminLogin() {
         </div>
         <div className="w-full lg:w-1/2 p-4">
           <div className="flex justify-center items-center mb-6">
-            <img src={'/src/assets/green_connect.png'} className="text-green-600 w-32" alt={t('login.logoAlt')} />
+            <img src={'/assets/green_connect.png'} className="text-green-600 w-32" alt={t('login.logoAlt')} />
 
           </div>
           <h2 className="text-3xl font-bold text-center text-gray-800 mb-2">{t('login.title')}</h2>

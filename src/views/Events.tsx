@@ -39,6 +39,7 @@ const EventsPage: React.FC = () => {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [organizer, setOrganizer] = useState('')
+  const [organizerEmail, setOrganizerEmail] = useState('')
   const [location, setLocation] = useState('')
   const [image, setImage] = useState<File | null>(null)
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
@@ -100,7 +101,7 @@ const EventsPage: React.FC = () => {
       formData.append('location', location)
       formData.append('event_date', moment(selectedDate).format('YYYY-MM-DD HH:mm:ss'))
       formData.append('image', image as File)
-      formData.append('manager_id', '1')
+      formData.append('organizer_email', organizerEmail)
       await dispatch(createEvent(formData))
       dispatch(
         showNotification({
@@ -277,6 +278,8 @@ const EventsPage: React.FC = () => {
           location={location}
           setLocation={setLocation}
           setImage={setImage}
+          organizerEmail={organizerEmail}
+          setOrganizerEmail={setOrganizerEmail}
         />
         <div className="flex justify-end mt-4">
           <Button
@@ -309,6 +312,8 @@ const EventsPage: React.FC = () => {
           location={location}
           setLocation={setLocation}
           setImage={setImage}
+          organizerEmail={organizerEmail}
+          setOrganizerEmail={setOrganizerEmail}
         />
         <div className="flex justify-end mt-4">
           <Button
@@ -352,6 +357,8 @@ interface EventFormProps {
   location: string
   setLocation: (value: string) => void
   setImage: (file: File | null) => void
+  organizerEmail: string
+  setOrganizerEmail: (value: string) => void
 }
 
 const EventForm: React.FC<EventFormProps> = ({
@@ -365,6 +372,8 @@ const EventForm: React.FC<EventFormProps> = ({
   setOrganizer,
   location,
   setLocation,
+  organizerEmail,
+  setOrganizerEmail,
   setImage
 }) => {
   const { t } = useTranslation()
@@ -404,6 +413,13 @@ const EventForm: React.FC<EventFormProps> = ({
         icon={Text as IconType}
         value={organizer}
         onChange={(e) => setOrganizer(e.target.value)}
+      />
+      <Input
+        label={t('eventsPage.organizerEmail')}
+        placeholder={t('eventsPage.enterOrganizerEmail')}
+        icon={Text as IconType}
+        value={organizerEmail}
+        onChange={(e) => setOrganizerEmail(e.target.value)}
       />
       <Input
         label={t('eventsPage.location')}

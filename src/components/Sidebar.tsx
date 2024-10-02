@@ -183,6 +183,8 @@ const MenuItem: React.FC<MenuItem & { isCollapsed: boolean }> = ({ icon, title, 
 const Sidebar: React.FC = () => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+  console.log(isMobile);
+  
   const { t } = useTranslation();
 
   const menuItems: MenuItem[] = [
