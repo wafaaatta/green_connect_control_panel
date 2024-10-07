@@ -140,7 +140,7 @@ const AnnouncesPage = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.2 }}
-                  className="absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10"
+                  className="absolute left-0 mt-2 w-56 rounded-md border shadow-lg bg-green-100 ring-1 ring-black ring-opacity-5 z-10"
                 >
                   <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                     {['all', 'pending', 'accepted', 'rejected'].map((status) => (
@@ -158,7 +158,7 @@ const AnnouncesPage = () => {
               )}
             </AnimatePresence>
           </div>
-          <Button color="blue" leftIcon={RefreshCcw as IconType} size="sm" onClick={() => dispatch(getAllAnnounces())}>
+          <Button  leftIcon={RefreshCcw as IconType} size="sm" onClick={() => dispatch(getAllAnnounces())}>
             {t('announcesPage.refreshData')}
           </Button>
         </div>

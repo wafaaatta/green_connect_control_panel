@@ -192,7 +192,6 @@ const Sidebar: React.FC = () => {
     { icon: <MdCampaign size={20} />, title: "sidebar.events", path: AppRoutes.EVENTS },
     { icon: <RiFilePaper2Line size={20} />, title: "sidebar.announces", path: AppRoutes.ANNOUNCES },
     { icon: <User size={20} />, title: "sidebar.users", path: AppRoutes.USERS },
-    { icon: <Layout size={20} />, title: "sidebar.allManagers", path: AppRoutes.MANAGERS },
     { icon: <Mail size={20} />, title: "sidebar.contactSubmissions", path: AppRoutes.CONTACT_SUBMISSIONS },
     {
       icon: <File size={20}/>, title: 'sidebar.articleManagement',

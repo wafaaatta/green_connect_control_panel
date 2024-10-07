@@ -2,7 +2,7 @@ import React from 'react';
 import { Loader2 } from 'lucide-react';
 import { IconType } from 'react-icons';
 
-type ColorType = 'blue' | 'red' | 'green' | 'yellow' | 'purple' | 'pink' | 'indigo' | 'gray';
+type ColorType = 'red' | 'blue' | 'green' | 'yellow' | 'purple' | 'pink' | 'indigo' | 'gray';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'text' | 'link';
@@ -22,67 +22,67 @@ const Button: React.FC<ButtonProps> = ({
   rightIcon: RightIcon,
   className = '',
   disabled,
-  color = 'blue',
+  color = 'green',
   ...props
 }) => {
   const baseStyles = 'inline-flex items-center justify-center font-medium rounded transition-colors focus:outline-none';
   
   const colorStyles = {
-    blue: {
-      bg: 'bg-[#0096c7] hover:bg-[#00b4d8]',
-      text: 'text-[#0096c7]',
-      border: 'border-[#0096c7]',
-      hover: 'hover:bg-[#e6f8fb]',
-      outline: 'bg-[#e6f8fb]'
-    },
     red: {
-      bg: 'bg-[#e63946] hover:bg-[#f07470]',
-      text: 'text-[#e63946]',
-      border: 'border-[#e63946]',
-      hover: 'hover:bg-[#fdf0f0]',
-      outline: 'bg-[#fdf0f0]'
+      bg: 'bg-red-600 hover:bg-red-700',
+      text: 'text-red-600',
+      border: 'border-red-600',
+      hover: 'hover:bg-red-100',
+      outline: 'bg-red-50'
+    },
+    blue: {
+      bg: 'bg-blue-600 hover:bg-blue-700',
+      text: 'text-blue-900',
+      border: 'border-blue-600',
+      hover: 'hover:bg-blue-100',
+      outline: 'bg-blue-50'
     },
     green: {
-      bg: 'bg-[#2a9d8f] hover:bg-[#40b3a2]',
-      text: 'text-[#2a9d8f]',
-      border: 'border-[#2a9d8f]',
-      hover: 'hover:bg-[#e8f6f3]',
-      outline: 'bg-[#e8f6f3]'
+      bg: 'bg-[#065F46] hover:bg-[#047857]', 
+      text: 'text-white', 
+      border: 'border-[#065F46]', 
+      hover: 'hover:bg-[#047857]', 
+      outline: 'bg-[#047857]' 
     },
     yellow: {
-      bg: 'bg-[#f4a261] hover:bg-[#f0d185]',
-      text: 'text-[#f4a261]',
-      border: 'border-[#f4a261]',
-      hover: 'hover:bg-[#fdf8e8]',
-      outline: 'bg-[#fdf8e8]'
+      bg: 'bg-yellow-500 hover:bg-yellow-600',
+      text: 'text-yellow-500',
+      border: 'border-yellow-500',
+      hover: 'hover:bg-yellow-50',
+      outline: 'bg-yellow-50'
     },
     purple: {
-      bg: 'bg-[#7209b7] hover:bg-[#8f3cc4]',
-      text: 'text-[#7209b7]',
-      border: 'border-[#7209b7]',
-      hover: 'hover:bg-[#f3e8fa]',
-      outline: 'bg-[#f3e8fa]'
+      bg: 'bg-purple-600 hover:bg-purple-700',
+      text: 'text-purple-600',
+      border: 'border-purple-600',
+      hover: 'hover:bg-purple-50',
+      outline: 'bg-purple-50'
     },
     pink: {
-      bg: 'bg-[#f72585] hover:bg-[#f9569d]',
-      text: 'text-[#f72585]',
-      border: 'border-[#f72585]',
-      hover: 'hover:bg-[#fee8f3]',
-      outline: 'bg-[#fee8f3]'
+      bg: 'bg-pink-600 hover:bg-pink-700',
+      text: 'text-pink-600',
+      border: 'border-pink-600',
+      hover: 'hover:bg-pink-50',
+      outline: 'bg-pink-50'
     },
     indigo: {
-      bg: 'bg-[#4361ee] hover:bg-[#6780f1]',
-      text: 'text-[#4361ee]',
-      border: 'border-[#4361ee]',
-      hover: 'hover:bg-[#e9edfd]',
-      outline: 'bg-[#e9edfd]'
+      bg: 'bg-indigo-600 hover:bg-indigo-700',
+      text: 'text-indigo-600',
+      border: 'border-indigo-600',
+      hover: 'hover:bg-indigo-50',
+      outline: 'bg-indigo-50'
     },
     gray: {
-      bg: 'bg-[#495057] hover:bg-[#6c757d]',
-      text: 'text-[#495057]',
-      border: 'border-[#495057]',
-      hover: 'hover:bg-[#f1f3f5]',
-      outline: 'bg-[#f1f3f5]'
+      bg: 'bg-gray-300 hover:bg-gray-700',
+      text: 'text-gray-600',
+      border: 'border-gray-600',
+      hover: 'hover:bg-gray-50',
+      outline: 'bg-gray-50'
     },
   };
   
@@ -92,7 +92,7 @@ const Button: React.FC<ButtonProps> = ({
     outline: `border ${colorStyles[color].border} ${colorStyles[color].text} ${colorStyles[color].hover} ${colorStyles[color].outline}`,
     ghost: `${colorStyles[color].text} ${colorStyles[color].hover}`,
     text: `bg-transparent ${colorStyles[color].text} hover:${colorStyles[color].hover}`,
-    link: `bg-transparent text-[#0096c7] underline-offset-4 hover:underline`,
+    link: `bg-transparent ${colorStyles[color].text} underline-offset-4 hover:underline`,
   };
 
   const sizeStyles = {

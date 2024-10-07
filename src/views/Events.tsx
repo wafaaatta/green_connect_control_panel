@@ -56,7 +56,7 @@ const EventsPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
         <Breadcrumb items={breadcrumbItems} />
         <div className="flex flex-wrap items-center gap-2">
-          <Button color="blue" leftIcon={Plus as IconType} size="sm" onClick={() => setIsAddModalOpen(true)}>
+          <Button leftIcon={Plus as IconType} size="sm" onClick={() => setIsAddModalOpen(true)}>
             {t('eventsPage.newEvent')}
           </Button>
         </div>
@@ -71,7 +71,7 @@ const EventsPage: React.FC = () => {
 
     return (
       <motion.div 
-        className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4"
+        className="grid max-sm:grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4"
       >
         <StatCard title={t('eventsPage.totalEvents')} value={totalEvents} icon={Calendar} />
         <StatCard title={t('eventsPage.upcomingEvents')} value={upcomingEvents} icon={Clock} />
@@ -81,13 +81,13 @@ const EventsPage: React.FC = () => {
   }
 
   const StatCard: React.FC<{ title: string; value: number; icon: React.ElementType }> = ({ title, value, icon: Icon }) => (
-    <div className="bg-white rounded shadow border p-4 flex items-center">
-      <div className="bg-blue-100 p-3 rounded-full mr-4">
-        <Icon className="w-6 h-6 text-blue-500" />
+    <div className="bg-green-100 rounded shadow border p-4 flex items-center">
+      <div className="bg-green-200 p-3 rounded-full mr-4">
+        <Icon className="w-6 h-6 text-green-800" />
       </div>
       <div>
-        <h3 className="text-lg font-semibold text-gray-700">{title}</h3>
-        <p className="text-2xl font-bold text-blue-600">{value}</p>
+        <h3 className="text-xl font-semibold text-gray-700">{title}</h3>
+        <p className="text-lg">{value}</p>
       </div>
     </div>
   )

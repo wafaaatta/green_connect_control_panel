@@ -52,7 +52,7 @@ const ArticlesPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
         <Breadcrumb items={breadcrumbItems} />
         <div className="flex flex-wrap items-center gap-2">
-          <Button color="blue" leftIcon={Plus as IconType} size="sm" onClick={() => setIsAddModalOpen(true)}>
+          <Button leftIcon={Plus as IconType} size="sm" onClick={() => setIsAddModalOpen(true)}>
             {t('articlesPage.newArticle')}
           </Button>
         </div>
@@ -204,6 +204,7 @@ const ArticlesPage: React.FC = () => {
                 icon={Edit as IconType}
                 text={t('articlesPage.edit')}
                 onClick={() => openEditModal(row)}
+                color='green'
               />
               <IconTextButton 
                 icon={Trash as IconType}
@@ -267,7 +268,7 @@ const ArticlesPage: React.FC = () => {
           }}>
             {t('articlesPage.cancel')}
           </Button>
-          <Button color="blue" onClick={isEditModalOpen ? handleEdit : handleAdd}>
+          <Button onClick={isEditModalOpen ? handleEdit : handleAdd}>
             {isEditModalOpen ? t('articlesPage.update') : t('articlesPage.create')}
           </Button>
         </div>
