@@ -94,6 +94,7 @@ export default function GreenConnectAdminLogin() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="relative">
               <input
+                name='email'
                 type="email"
                 id="email"
                 value={email}
@@ -117,6 +118,7 @@ export default function GreenConnectAdminLogin() {
               <Lock className="absolute left-4 top-3.5 text-gray-400" size={20} />
               <button
                 type="button"
+                name='showPassword'
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-4 top-3.5 text-gray-400 hover:text-gray-600 focus:outline-none"
                 aria-label={showPassword ? t('login.hidePassword') : t('login.showPassword')}
