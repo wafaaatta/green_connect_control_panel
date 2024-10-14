@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Menu, X, Home, Users, Calendar, FileText, BarChart2, LogOutIcon } from 'lucide-react'
+import { Menu, X, Home, Users, Calendar, FileText, LogOutIcon } from 'lucide-react'
 import { useAppDispatch } from '../hooks/hooks'
 import { logout } from '../redux/stores/auth_store'
 import AppRoutes from '../constants/app_routes'
@@ -24,11 +24,10 @@ const Header = () => {
   }, [])
 
   const navItems = [
-    { name: t('header.dashboard'), icon: Home, path: '/admin' },
-    { name: t('header.users'), icon: Users, path: '/admin/users' },
-    { name: t('header.events'), icon: Calendar, path: '/admin/events' },
-    { name: t('header.articles'), icon: FileText, path: '/admin/articles' },
-    { name: t('header.reports'), icon: BarChart2, path: '/admin/reports' },
+    { name: t('header.dashboard'), icon: Home, path: '' },
+    { name: t('header.users'), icon: Users, path: '/users' },
+    { name: t('header.events'), icon: Calendar, path: '/events' },
+    { name: t('header.articles'), icon: FileText, path: '/articles' },
   ]
 
   const dispatch = useAppDispatch()
@@ -50,8 +49,8 @@ const Header = () => {
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
-            <Link to="/admin" className="flex-shrink-0">
-              <img  className="h-16 w-auto" src="/assets/green_connect.png" alt={t('header.logoAlt')} loading={'lazy'}/>
+            <Link to="/" className="flex-shrink-0">
+              <img className="h-16 w-auto" src="/assets/green_connect.png" alt={t('header.logoAlt')} />
             </Link>
           </div>
           <div className="flex items-center">
@@ -111,7 +110,6 @@ const Header = () => {
                   className="h-10 w-10 rounded-full"
                   src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
                   alt={t('header.adminPhotoAlt')}
-                  loading='lazy'
                 />
               </div>
               <div className="ml-3">
