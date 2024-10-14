@@ -240,9 +240,9 @@ export function DataTable<T>({
       <tr
         key={index}
         className={`${
-          hoverable ? 'hover:bg-green-50' : ''
-        } ${striped && index % 2 === 0 ? 'bg-green-50' : 'bg-white'} ${
-          isSelected ? 'bg-green-100' : ''
+          hoverable ? 'hover:bg-slate-100' : ''
+        } ${striped && index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} ${
+          isSelected ? 'bg-gray-100' : ''
         }`}
       >
         {showCheckboxes && (

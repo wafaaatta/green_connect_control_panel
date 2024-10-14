@@ -65,6 +65,7 @@ const ImageControl: React.FC<ImageControlProps> = ({ src, alt, className = '' })
         alt={alt}
         className={`cursor-zoom-in ${className}`}
         onClick={() => setIsZoomed(true)}
+        loading='lazy'
       />
       <AnimatePresence>
         {isZoomed && (

@@ -167,6 +167,7 @@ function FileUpload({
                         src={URL.createObjectURL(file)}
                         alt={file.name}
                         className="w-full h-full object-cover"
+                        loading='lazy'
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">

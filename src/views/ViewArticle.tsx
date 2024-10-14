@@ -36,7 +36,7 @@ const ViewArticlePage = () => {
       <div className="">
     
         <div className="bg-white rounded shadow overflow-hidden">
-          <img src={'https://via.placeholder.com/800x400'} alt={article.title} className="w-full h-64 object-cover" />
+          <img loading='lazy' src={'https://via.placeholder.com/800x400'} alt={article.title} className="w-full h-64 object-cover" />
           
           <div className="p-6">
             <h1 className="text-3xl font-bold text-gray-900 mb-4">{article.title}</h1>

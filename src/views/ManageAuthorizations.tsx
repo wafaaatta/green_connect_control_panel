@@ -54,7 +54,7 @@ const ManageAuthorizations = () => {
       <div className="max-w-7xl mx-auto">        
         {/* Manager Info Card */}
         <div className="bg-white rounded shadow px-2 py-2 mb-4 flex items-center">
-          <img src={managerData.avatar} alt={managerData.name} className="w-16 h-18 rounded mr-6" />
+          <img loading='lazy' src={managerData.avatar} alt={managerData.name} className="w-16 h-18 rounded mr-6" />
           <div>
             <h2 className="text-xl font-semibold text-gray-800">{managerData.name}</h2>
             <p className="text-gray-600">{managerData.email}</p>

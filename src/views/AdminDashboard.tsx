@@ -5,6 +5,8 @@ import { useAppDispatch, useAppSelector } from '../hooks/hooks'
 import { getStatistics } from '../redux/stores/statistics_store'
 import { IconType } from 'react-icons'
 import { useTranslation } from 'react-i18next'
+import { NavLink } from 'react-router-dom'
+import AppRoutes from '../constants/app_routes'
 
 const AdminDashboard = () => {
   const { t } = useTranslation()
@@ -20,12 +22,12 @@ const AdminDashboard = () => {
       <div className="space-y-4">
         {/* Quick Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
-          <StatCard icon={Users as IconType} title={t('dashboard.totalUsers')} value={state.statistics.users} />
-          <StatCard icon={Calendar as IconType} title={t('dashboard.activeEvents')} value={state.statistics.events} />
-          <StatCard icon={Bell as IconType} title={t('dashboard.newAnnounces')} value={state.statistics.announces} />
-          <StatCard icon={FileText as IconType} title={t('dashboard.totalArticles')} value={state.statistics.articles} />
-          <StatCard icon={Briefcase as IconType} title={t('dashboard.managers')} value={state.statistics.managers} />
-          <StatCard icon={Mails as IconType} title={t('dashboard.contacts')} value={state.statistics.contact_submissions} />
+          <StatCard path={AppRoutes.USERS} icon={Users as IconType} title={t('dashboard.totalUsers')} value={state.statistics.users} />
+          <StatCard path={AppRoutes.EVENTS} icon={Calendar as IconType} title={t('dashboard.activeEvents')} value={state.statistics.events} />
+          <StatCard path={AppRoutes.ANNOUNCES} icon={Bell as IconType} title={t('dashboard.newAnnounces')} value={state.statistics.announces} />
+          <StatCard path={AppRoutes.ARTICLES} icon={FileText as IconType} title={t('dashboard.totalArticles')} value={state.statistics.articles} />
+          <StatCard path={AppRoutes.MANAGERS} icon={Briefcase as IconType} title={t('dashboard.managers')} value={state.statistics.managers} />
+          <StatCard path={AppRoutes.CONTACT_SUBMISSIONS} icon={Mails as IconType} title={t('dashboard.contacts')} value={state.statistics.contact_submissions} />
         </div>
 
         {/* Charts */}
@@ -82,29 +84,32 @@ const AdminDashboard = () => {
 }
 
 const StatCard = (
-  { icon: Icon, title, value }: {
+  { icon: Icon, title, value, path }: {
     icon: IconType,
     title: string,
     value: number,
+    path: string
   }
 ) => (
-  <div className="bg-white overflow-hidden shadow rounded transition-all duration-300">
-    <div className="p-4">
-      <div className="flex items-center">
-        <div className="flex-shrink-0 bg-green-100 rounded-full p-3">
-          <Icon size={18} />
-        </div>
-        <div className="ml-5 w-0 flex-1">
-          <dl>
-            <dt className="text-sm font-medium text-gray-500 truncate">{title}</dt>
-            <dd>
-              <div className="text-lg font-medium text-gray-900">{value}</div>
-            </dd>
-          </dl>
+  <NavLink to={path}>
+    <div className="bg-white overflow-hidden shadow rounded transition-all duration-300">
+      <div className="p-4">
+        <div className="flex items-center">
+          <div className="flex-shrink-0 bg-green-100 rounded-full p-3">
+            <Icon size={18} />
+          </div>
+          <div className="ml-5 w-0 flex-1">
+            <dl>
+              <dt className="text-sm font-medium text-gray-500 truncate">{title}</dt>
+              <dd>
+                <div className="text-lg font-medium text-gray-900">{value}</div>
+              </dd>
+            </dl>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </NavLink>
 )
 
 const ChartCard = ({ title, children }: { title: string, children: React.ReactNode }) => (

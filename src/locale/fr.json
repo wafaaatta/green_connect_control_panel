@@ -222,6 +222,10 @@
         "id": "ID",
         "name": "Nom",
         "email": "E-mail",
+        "email_verified_at": "E-mail verifié",
+        "not_verified": "Non ver-finalsité",
+        "deleteUser": "Supprimer l'utilisateur",
+        "deleteUserDescription": "Étes-vous sur de vouloir supprimer cet utilisateur ?",
         "delete": "Supprimer"
     },
 
