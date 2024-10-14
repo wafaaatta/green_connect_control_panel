@@ -184,6 +184,7 @@ const AnnouncesPage = () => {
             data={filteredAnnounces}
             showColumnSelector
             columns={[
+              { id: 'ID', title: t('announcesPage.id'), key: 'id', sortable: true },
               { id: 'title', title: t('announcesPage.title'), key: 'title' },
               { id: 'description', title: t('announcesPage.description'), key: 'description', render(_, row) {
                 return (

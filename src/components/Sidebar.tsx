@@ -16,6 +16,8 @@ import AppRoutes from '../constants/app_routes';
 import { RiFilePaper2Line } from 'react-icons/ri';
 import { MdCampaign } from 'react-icons/md';
 import { useTranslation } from 'react-i18next';
+import { useAppDispatch } from '../hooks/hooks';
+import { logout } from '../redux/stores/auth_store';
 
 interface SubMenuItem {
   title: string;
@@ -220,6 +222,14 @@ const Sidebar: React.FC = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  const dispatch = useAppDispatch()
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    dispatch(logout())
+    navigate(AppRoutes.LOGIN)
+  }
+
   return (
     <motion.div
       initial={{ width: isCollapsed ? 64 : 250 }}
@@ -244,7 +254,7 @@ const Sidebar: React.FC = () => {
       </div>
       <hr className="border-gray-500 mb-3" />
 
-      <div>
+      <div onClick={handleLogout}>
       {
         isCollapsed ? (
           <div className='px-2 text-red-600 py-2 rounded mx-2 mb-3 flex items-center justify-center hover:bg-gray-700 cursor-pointer'>
