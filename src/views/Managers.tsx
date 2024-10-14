@@ -20,7 +20,7 @@ const ManagersPage: React.FC = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
-  const [selectedManager, setSelectedManager] = useState<Manager | null>(null)
+  const [selectedManager, setSelectedManager] = useState(null)
   const [newManager, setNewManager] = useState({ name: '', email: '',  password: '' })
 
   const ActionBar: React.FC = () => (

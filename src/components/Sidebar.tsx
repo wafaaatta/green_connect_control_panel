@@ -9,7 +9,6 @@ import {
   File,
   Package,
   User,
-  Layout,
   Mail,
 } from 'lucide-react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';

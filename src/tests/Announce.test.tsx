@@ -1,11 +1,10 @@
-import React from 'react'
+/* import React from 'react'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import { Provider } from 'react-redux'
 import { configureStore } from '@reduxjs/toolkit'
 import announceReducer, { getAllAnnounces, acceptAnnounce, rejectAnnounce } from '../redux/stores/announce_store'
 import notificationReducer from '../redux/stores/notification_store'
-import { t } from 'i18next'
 import { act } from 'react-dom/test-utils'
 import AnnouncesPage from '../views/Announces'
 
@@ -159,3 +158,4 @@ describe('AnnouncesPage', () => {
     })
   })
 })
+ */

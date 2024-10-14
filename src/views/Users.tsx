@@ -74,7 +74,7 @@ const UsersPage = () => {
             { id: 'id', key: 'id', title: t('usersPage.id') },
             { id: 'name', key: 'name', title: t('usersPage.name') },
             { id: 'email', key: 'email', title: t('usersPage.email') },
-            { id: 'email_verified_at', key: 'email_verified_at', title: t('usersPage.email_verified_at'), render(value, row) {
+            { id: 'email_verified_at', key: 'email_verified_at', title: t('usersPage.email_verified_at'), render(_, row) {
               return row.email_verified_at ?? <Badge color="danger">{t('usersPage.not_verified')}</Badge>;
             }, },
           ]}
