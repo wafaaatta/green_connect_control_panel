@@ -185,21 +185,21 @@ const AnnouncesPage = () => {
             showColumnSelector
             columns={[
               { id: 'ID', title: t('announcesPage.id'), key: 'id', sortable: true },
-              { id: 'title', title: t('announcesPage.title'), key: 'title' },
-              { id: 'description', title: t('announcesPage.description'), key: 'description', render(_, row) {
+              { id: 'title', title: t('announcesPage.title'), key: 'title', sortable: true },
+              { id: 'description', sortable: true, title: t('announcesPage.description'), key: 'description', render(_, row) {
                 return (
                   <div className="max-w-sm text-wrap">{row.description}</div>
                 )
               },},
-              { id: 'country', title: t('announcesPage.country'), key: 'country' },
-              { id: 'city', title: t('announcesPage.city'), key: 'city' },
-              { id: 'postal_code', title: t('announcesPage.postalCode'), key: 'postal_code' },
+              { id: 'country', sortable: true, title: t('announcesPage.country'), key: 'country' },
+              { id: 'city', sortable: true, title: t('announcesPage.city'), key: 'city' },
+              { id: 'postal_code', sortable: true, title: t('announcesPage.postalCode'), key: 'postal_code' },
               { id: 'request_type', title: t('announcesPage.requestType'), key: 'request_type', render(_, row) {
                 return (
                   <div
                     className="flex items-center justify-center bg-blue-100 text-blue-700 px-2 py-1 rounded text-sm font-semibold"
                   >
-                    {row.request_type === null ? t('announcesPage.nothing') : row.request_type === 'creation' ? t('announcesPage.creation') : t('announcesPage.modification')}
+                    {row.request_type === null ? t('announcesPage.nothing') : row.request_type == 'creation' ? t('announcesPage.creation') : t('announcesPage.modification')}
                   </div>
                 )
               }, },

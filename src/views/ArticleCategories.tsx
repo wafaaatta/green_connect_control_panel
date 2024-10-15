@@ -130,9 +130,9 @@ const ArticleCategoriesPage: React.FC = () => {
               striped
               showColumnSelector
               columns={[
-                { id: 'id', title: t('articleCategories.id'), key: 'id', flex: 1, align: 'left' },
-                { id: 'name', title: t('articleCategories.name'), key: 'name', flex: 1, align: 'left' },
-                { id: 'created_at', title: t('articleCategories.createdAt'), key: 'created_at', flex: 1, align: 'left', render(_, row) {
+                { id: 'id', title: t('articleCategories.id'), key: 'id', flex: 1, align: 'left', sortable: true },
+                { id: 'name', title: t('articleCategories.name'), key: 'name', flex: 1, align: 'left', sortable: true },
+                { id: 'created_at', sortable: true, title: t('articleCategories.createdAt'), key: 'created_at', flex: 1, align: 'left', render(_, row) {
                   return moment(row.created_at).format('YYYY-MM-DD HH:mm:ss')
                 }, },
               ]}

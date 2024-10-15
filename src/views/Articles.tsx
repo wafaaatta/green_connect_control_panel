@@ -179,16 +179,16 @@ const ArticlesPage: React.FC = () => {
           emptyMessage={t('articlesPage.noArticlesFound')}
           loading={loading}
           columns={[
-            { title: t('articlesPage.id'), key: 'id', id: 'id' },
-            { title: t('articlesPage.title'), key: 'title', id: 'title' },
-            { title: t('articlesPage.content'), key: 'content', id: 'content', align: 'left', render(_, row) {
+            { title: t('articlesPage.id'), key: 'id', id: 'id', sortable: true },
+            { title: t('articlesPage.title'), key: 'title', id: 'title', sortable: true },
+            { title: t('articlesPage.content'), sortable: true, key: 'content', id: 'content', align: 'left', render(_, row) {
               return (
                 <div className="max-w-sm break-words leading-relaxed text-wrap">
                   {row.content}
                 </div>
               )
             }, },
-            { title: t('articlesPage.category'), key: ['article_category', 'name'], id: 'category' },
+            { title: t('articlesPage.category'), sortable: true, key: ['article_category', 'name'], id: 'category' },
             { title: t('articlesPage.image'), key: 'image', id: 'image' , render(_, row) {
               return (
                 <div className="w-20 h-20">

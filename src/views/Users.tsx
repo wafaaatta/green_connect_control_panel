@@ -71,10 +71,10 @@ const UsersPage = () => {
           data={users}
           loading={loading}
           columns={[
-            { id: 'id', key: 'id', title: t('usersPage.id') },
-            { id: 'name', key: 'name', title: t('usersPage.name') },
-            { id: 'email', key: 'email', title: t('usersPage.email') },
-            { id: 'email_verified_at', key: 'email_verified_at', title: t('usersPage.email_verified_at'), render(_, row) {
+            { id: 'id', key: 'id', title: t('usersPage.id'), sortable: true },
+            { id: 'name', key: 'name', title: t('usersPage.name'), sortable: true },
+            { id: 'email', key: 'email', title: t('usersPage.email'), sortable: true },
+            { id: 'email_verified_at', sortable: true, key: 'email_verified_at', title: t('usersPage.email_verified_at'), render(_, row) {
               return row.email_verified_at ?? <Badge color="danger">{t('usersPage.not_verified')}</Badge>;
             }, },
           ]}
