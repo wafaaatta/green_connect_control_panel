@@ -199,7 +199,7 @@ const AnnouncesPage = () => {
                   <div
                     className="flex items-center justify-center bg-blue-100 text-blue-700 px-2 py-1 rounded text-sm font-semibold"
                   >
-                    {row.request_type === null ? t('announcesPage.nothing') : row.request_type == 'creation' ? t('announcesPage.creation') : t('announcesPage.modification')}
+                    {row.request_type == null ? t('announcesPage.nothing') : row.request_type == 'creation' ? t('announcesPage.creation') : t('announcesPage.modification')}
                   </div>
                 )
               }, },
